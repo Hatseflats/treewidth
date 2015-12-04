@@ -159,10 +159,7 @@ def read(path):
 			a[s,t] = 1
 
 	return a
-
-def symmetrize(a):
-    return a + a.T - np.diag(a.diagonal())
-
+	
 # @profile
 def make_clique(g,n):
 	for i,w in enumerate(n):
@@ -186,7 +183,7 @@ def triangulate(g, ordering):
 	return successors
 
 if __name__ == '__main__':
-	g = read("graphs/myciel7.col")
+	g = read("graphs/inithx.i.1.col")
 	ordering = range(g.shape[0])
 	from time import time
 	start = time()
