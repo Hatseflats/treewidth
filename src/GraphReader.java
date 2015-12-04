@@ -14,7 +14,7 @@ public class GraphReader {
         this.path = path;
     }
 
-    public Graph read() throws IOException {
+    public Graph read()  {
         Graph g = new Graph();
 
         Path filePath = Paths.get("/home/sebastiaan/Code/treewidth/graphs", path);
@@ -40,6 +40,8 @@ public class GraphReader {
                 g.addEdge(v,w);
 
             });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return g;

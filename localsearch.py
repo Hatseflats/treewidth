@@ -10,11 +10,11 @@ def local_search(g):
 	tabu_list = deque()
 
 	ordering = initial_solution(g)
-	h, successors = triangulate(g, ordering)
-	s = score(h, successors)
+	successors = triangulate(g, ordering)
+	s = score(successors)
 
 	i = 0
-	a = 1
+	a = 3
 
 	while i < a:
 		tabu_list.append(ordering)
@@ -23,19 +23,20 @@ def local_search(g):
 
 		orderings = [o for o in neighborhood(ordering, successors) if o not in tabu_list]
 		neighbors = [triangulate(g, o) for o in orderings]
-		scores = [score(*neighbor) for neighbor in neighbors]
+		scores = [score(neighbor) for neighbor in neighbors]
 
-		max_index, max_value = max(enumerate(scores), key=operator.itemgetter(1))
+		print(scores)
 
-		ordering = orderings[max_index]
-		h, successors = neighbors[max_index]
+		min_index, min_value = min(enumerate(scores), key=operator.itemgetter(1))
 
-		print(ordering, max_value)
+		ordering = orderings[min_index]
+		successors = neighbors[min_index]
+
+		print(min_value, max(map(len,successors.values())))
 
 		i += 1
 		if i == a:
-			print(max(map(len,successors.values())))
-
+			print("????")
 
 def neighborhood(ordering, successors):
 	neighbors = []
@@ -77,67 +78,15 @@ def max_predecessor(ordering, v, successors):
 	except ValueError:
 		return None
 
-def score(H, successors):
-	n = len(list(H.vertices()))
+def score(successors):
+	n = len(successors)
 	clique_size = max(map(len,successors.values()))
 	succ = sum(map(lambda x: len(x)^2, successors.values()))
 
 	return (n^2)*(clique_size^2) + succ
 
 def initial_solution(g):
-	return [int(v) for v in g.vertices()]
-
-# @profile
-# def make_clique(g,n):
-# 	new_edges = []
-# 	for i,w in enumerate(n):
-# 		neighbours = set(w.all_neighbours())
-# 		new_edges.extend([(u,w) for u in n[i+1:] if not (u in neighbours)])
-# 	g.add_edge_list(new_edges)
-
-# @profile
-# def make_clique(g,n):
-# 	new_edges = []
-# 	for i,w in enumerate(n):
-# 		new_edges.extend([(u,w) for u in n[i+1:]])
-# 	g.add_edge_list(new_edges)
-# 	# remove_parallel_edges(g)
-# 	label_parallel_edges(g, eprop=g.ep.deleted)
-
-
-# @profile 
-# def triangulate(g, ordering):
-# 	h = g.copy()
-# 	successors = {}
-
-# 	visited = h.new_vertex_property("bool") 
-# 	h.vp.visited = visited
-# 	h.set_vertex_filter(visited, True)
-
-# 	deleted = h.new_edge_property("bool")
-# 	h.ep.deleted = deleted
-# 	h.set_edge_filter(deleted, True)
-
-# 	vertices = [h.vertex(i) for i in ordering]
-
-# 	for v in vertices:
-# 		n = list(v.all_neighbours())
-# 		successors[int(v)] = [int(w) for w in n]
-# 		make_clique(h,n)
-# 		h.vp.visited[v] = True	
-
-# 	return h, successors
-
-# def read(path):
-# 	with open(path, "r") as f:
-# 		lines = [line.rstrip('\n') for line in f.readlines() if line[0] == 'e']
-# 		edges = [(int(edge[1]),int(edge[2])) for edge in [line.split() for line in lines]]
-	
-# 	g = Graph(directed=False)
-# 	g.add_edge_list(edges)
-# 	g.remove_vertex(0)
-
-# 	return g
+	return range(g.shape[0])
 
 def read(path):
 	with open(path, "r") as f:
@@ -172,25 +121,24 @@ def triangulate(g, ordering):
 	successors = {}
 	deleted = set()
 
+	h = np.matrix(g, copy=True)
+
 	for v in ordering:
-		n = np.nonzero(g[v,:])[1]
+		n = np.nonzero(h[v,:])[1]
 		n = [w for w in n.tolist()[0] if w not in deleted]
 		successors[v] = n
 
-		make_clique(g,n)
+		make_clique(h,n)
 		deleted.add(v)
 
 	return successors
 
 if __name__ == '__main__':
-	g = read("graphs/inithx.i.1.col")
-	ordering = range(g.shape[0])
+	g = read("graphs/myciel3.col")
 	from time import time
 	start = time()
-	succ = triangulate(g, ordering)
+	local_search(g)
 	print(time() - start)
-
-	print(max(map(len,succ.values())))
 
 
 

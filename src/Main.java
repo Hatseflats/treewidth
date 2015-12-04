@@ -1,19 +1,11 @@
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         GraphReader gr = new GraphReader("myciel3.col");
-        Graph g = new Graph();
-        try {
-            g = gr.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Graph g = gr.read();
         LocalSearch localSearch = new LocalSearch(g);
-        int[] ordering = localSearch.initialOrdering();
+        ArrayList<Vertex> ordering = localSearch.initialOrdering();
         long startTime = System.nanoTime();
         HashMap<Vertex, Set<Vertex>> successors =  localSearch.triangulate(ordering);
         long endTime = System.nanoTime();
@@ -21,16 +13,9 @@ public class Main {
         double duration = (endTime - startTime)  / 1000000000.0;
 
         System.out.println(duration);
-        int maxEntry = 0;
-        for (Vertex v : successors.keySet())
-        {
-            Set<Vertex> n = successors.get(v);
-            if (n.size() > maxEntry)
-            {
-                maxEntry = n.size();
-            }
-        }
-        System.out.println(maxEntry);
-
+        System.out.println(localSearch.score(successors));
+        Vertex v = g.vertices.get(1);
+        System.out.println(localSearch.minSuccessor(ordering,v,successors.get(v)));
+//        System.out.println(Arrays.toString(ordering));
     }
 }

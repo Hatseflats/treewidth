@@ -29,7 +29,8 @@ public class Graph {
     }
 
     public void makeClique(Set<Vertex> subgraph){
-        ArrayList<Vertex> vertices = new ArrayList<>(Arrays.asList(subgraph.toArray(new Vertex[subgraph.size()])));
+        ArrayList<Vertex> vertices = new ArrayList<>();
+        vertices.addAll(subgraph);
         int i = 0;
         for(Vertex v : vertices){
             for(Vertex w : vertices.subList(i+1, vertices.size())){
