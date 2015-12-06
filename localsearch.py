@@ -14,7 +14,7 @@ def local_search(g):
 	s = score(successors)
 
 	i = 0
-	a = 3
+	a = 10
 
 	while i < a:
 		tabu_list.append(ordering)
@@ -82,8 +82,7 @@ def score(successors):
 	n = len(successors)
 	clique_size = max(map(len,successors.values()))
 	succ = sum(map(lambda x: len(x)^2, successors.values()))
-
-	return (n^2)*(clique_size^2) + succ
+	return (n*n)*(clique_size*clique_size) + succ
 
 def initial_solution(g):
 	return range(g.shape[0])
@@ -134,7 +133,7 @@ def triangulate(g, ordering):
 	return successors
 
 if __name__ == '__main__':
-	g = read("graphs/myciel3.col")
+	g = read("graphs/myciel5.col")
 	from time import time
 	start = time()
 	local_search(g)

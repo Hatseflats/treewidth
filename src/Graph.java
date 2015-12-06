@@ -21,6 +21,12 @@ public class Graph {
         adjacencyList.get(w).add(v);
     }
 
+    public void unsetMasks(){
+        for(Vertex v: vertices.values()){
+            v.setMask(false);
+        }
+    }
+
     public Set<Vertex> neighborhood(Vertex v){
         Set<Vertex> adjacent = adjacencyList.get(v);
         adjacent = adjacent.stream().filter(w -> !w.mask).collect(Collectors.toSet());
@@ -41,11 +47,12 @@ public class Graph {
         }
     }
 
-    @Override
-    public Graph clone(){
+    public Graph copy(){
         Graph h = new Graph();
-        h.vertices = new HashMap<>(vertices);
-        h.adjacencyList = new HashMap<>(adjacencyList);
+        h.vertices.putAll(vertices);
+        for(Vertex v: vertices.values()){
+            h.adjacencyList.put(v, new HashSet<>(adjacencyList.get(v)));
+        }
 
         return h;
     }
