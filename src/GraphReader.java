@@ -4,9 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-/**
- * Created by sebastiaan on 2-12-15.
- */
 public class GraphReader {
    public String path;
 
