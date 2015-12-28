@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        GraphReader gr = new GraphReader("myciel7.col");
+        GraphReader gr = new GraphReader("myciel5.col");
         Graph g = gr.read();
         LocalSearch localSearch = new LocalSearch(g);
         long startTime = System.nanoTime();

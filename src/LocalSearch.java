@@ -14,41 +14,41 @@ public class LocalSearch {
         int i = 0;
         int a = 50;
 
-        LinkedList<ArrayList<Vertex>> tabuList = new LinkedList<>();
+        LinkedList<Solution> tabuList = new LinkedList<>();
 
-        ArrayList<Vertex> ordering = maximumMinimumDegree();
-        HashMap<Vertex, Set<Vertex>> successors = triangulate(ordering);
+        Solution s = new Solution(maximumMinimumDegree());
+        HashMap<Vertex, Set<Vertex>> successors = triangulate(s);
 
-
-        int s = score(successors);
+        int minScore = score(successors);
 
         while (i < a){
-            tabuList.push(ordering);
+            tabuList.push(s);
             if(tabuList.size() > 21){
                 tabuList.poll();
             }
 
-            ArrayList<ArrayList<Vertex>> neighbors = neighborhood(ordering, successors, tabuList);
+            ArrayList<Solution> neighbors = neighborhood(s, successors, tabuList);
             ArrayList<HashMap<Vertex, Set<Vertex>>> successorSets = (ArrayList<HashMap<Vertex, Set<Vertex>>>)
                     neighbors.parallelStream().map(this::triangulate).collect(Collectors.toList());
+
             ArrayList<Integer> scores = (ArrayList<Integer>) successorSets.parallelStream().map(this::score).collect(Collectors.toList());
             int minIndex = IntStream.range(0,scores.size()).reduce((x,y) -> scores.get(x) > scores.get(y) ? y : x).getAsInt();
-            s = scores.get(minIndex);
+            minScore = scores.get(minIndex);
             successors = successorSets.get(minIndex);
-            ordering = neighbors.get(minIndex);
+            s = neighbors.get(minIndex);
 
-            System.out.println("Score:" + s + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
+            System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
 
             i++;
         }
     }
 
-    public HashMap<Vertex, Set<Vertex>> triangulate(ArrayList<Vertex> ordering) {
+    public HashMap<Vertex, Set<Vertex>> triangulate(Solution s) {
         Graph h = g.copy();
         HashMap<Vertex, Set<Vertex>> successors = new HashMap<>();
         HashSet<Vertex> masked = new HashSet<>();
 
-        for (Vertex v: ordering) {
+        for (Vertex v: s.ordering) {
             Set<Vertex> neighborhood = h.neighborhood(v);
             neighborhood.removeAll(masked);
             successors.put(v,neighborhood);
@@ -69,26 +69,26 @@ public class LocalSearch {
         return (n*n)*(w*w)+succ;
     }
 
-    public ArrayList<ArrayList<Vertex>> neighborhood(ArrayList<Vertex> ordering, HashMap<Vertex, Set<Vertex>> successors, LinkedList<ArrayList<Vertex>> tabuList){
-        ArrayList<ArrayList<Vertex>> neighbors = new ArrayList<>();
+    public ArrayList<Solution> neighborhood(Solution s, HashMap<Vertex, Set<Vertex>> successors, LinkedList<Solution> tabuList){
+        ArrayList<Solution> neighbors = new ArrayList<>();
         int currentIndex = 0;
 
-        for(Vertex v : ordering){
-            int maxPred = maxPredecessor(ordering, v, successors);
-            int minSucc = minSuccessor(ordering, v, successors.get(v));
+        for(Vertex v : s.ordering){
+            int maxPred = maxPredecessor(s, v, successors);
+            int minSucc = minSuccessor(s, v, successors.get(v));
 
             if(maxPred != -1){
-                ArrayList<Vertex> neighbor1 = new ArrayList<>(ordering);
-                Collections.swap(neighbor1, currentIndex, maxPred);
-                if(!neighbors.contains(neighbor1) && !tabuList.contains(neighbor1)){
-                    neighbors.add(neighbor1);
+                Solution s1 = s.copy();
+                s1.swap(currentIndex, maxPred);
+                if(!neighbors.contains(s1) && !tabuList.contains(s1)){
+                    neighbors.add(s1);
                 }
             }
             if(minSucc != -1){
-                ArrayList<Vertex> neighbor2 = new ArrayList<>(ordering);
-                Collections.swap(neighbor2, currentIndex, minSucc);
-                if(!neighbors.contains(neighbor2) && !tabuList.contains(neighbor2)){
-                    neighbors.add(neighbor2);
+                Solution s2 = s.copy();
+                s2.swap(currentIndex, minSucc);
+                if(!neighbors.contains(s2) && !tabuList.contains(s2)){
+                    neighbors.add(s2);
                 }
             }
             currentIndex = currentIndex + 1;
@@ -102,23 +102,23 @@ public class LocalSearch {
         return max;
     }
 
-    public int maxPredecessor(ArrayList<Vertex> ordering, Vertex v, HashMap<Vertex, Set<Vertex>> successors){
+    public int maxPredecessor(Solution s, Vertex v, HashMap<Vertex, Set<Vertex>> successors){
         Set<Vertex> keys = successors.keySet();
-        Set<Vertex> candidates = keys.stream().filter(s -> successors.get(s).contains(v)).collect(Collectors.toSet());
+        Set<Vertex> candidates = keys.stream().filter(k -> successors.get(k).contains(v)).collect(Collectors.toSet());
         if(candidates.isEmpty()){
             return -1;
         } else {
-            return candidates.stream().mapToInt(ordering::indexOf).max().getAsInt();
+            return candidates.stream().mapToInt(s.ordering::indexOf).max().getAsInt();
         }
     }
 
-    public int minSuccessor(ArrayList<Vertex> ordering, Vertex v, Set<Vertex> succ){
-        int index = ordering.indexOf(v);
-        ArrayList<Vertex> candidates = (ArrayList<Vertex>) ordering.subList(index+1,ordering.size()).stream().filter(succ::contains).collect(Collectors.toList());
+    public int minSuccessor(Solution s, Vertex v, Set<Vertex> succ){
+        int index = s.ordering.indexOf(v);
+        ArrayList<Vertex> candidates = (ArrayList<Vertex>) s.ordering.subList(index+1,s.ordering.size()).stream().filter(succ::contains).collect(Collectors.toList());
         if(candidates.isEmpty()){
             return -1;
         } else {
-            return ordering.indexOf(candidates.get(0));
+            return s.ordering.indexOf(candidates.get(0));
         }
     }
 
