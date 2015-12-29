@@ -23,12 +23,4 @@ public class Solution {
         Collections.swap(ordering, i, j);
     }
 
-//    @Override
-//    public int hashCode() {
-//        String id = ordering.stream().map(v -> String.valueOf(v.hashCode())).collect(Collectors.joining());
-//        return Integer.valueOf(id);
-//    }
-
-
-
 }

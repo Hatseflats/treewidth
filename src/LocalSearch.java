@@ -3,65 +3,27 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class LocalSearch {
-    public Graph g;
+abstract class LocalSearch {
 
-    public LocalSearch(Graph g){
-        this.g = g;
-    }
+    abstract void run(Graph g);
 
-    public void run(){
-        int i = 0;
-        int a = 50;
-
-        LinkedList<Solution> tabuList = new LinkedList<>();
-
-        Solution s = new Solution(maximumMinimumDegree());
-        HashMap<Vertex, Set<Vertex>> successors = triangulate(s);
-
-        int minScore = score(successors);
-
-        while (i < a){
-            tabuList.push(s);
-            if(tabuList.size() > 21){
-                tabuList.poll();
-            }
-
-            ArrayList<Solution> neighbors = neighborhood(s, successors, tabuList);
-            ArrayList<HashMap<Vertex, Set<Vertex>>> successorSets = (ArrayList<HashMap<Vertex, Set<Vertex>>>)
-                    neighbors.parallelStream().map(this::triangulate).collect(Collectors.toList());
-
-            ArrayList<Integer> scores = (ArrayList<Integer>) successorSets.parallelStream().map(this::score).collect(Collectors.toList());
-            int minIndex = IntStream.range(0,scores.size()).reduce((x,y) -> scores.get(x) > scores.get(y) ? y : x).getAsInt();
-            minScore = scores.get(minIndex);
-            successors = successorSets.get(minIndex);
-            s = neighbors.get(minIndex);
-
-            System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
-
-            i++;
-        }
-    }
-
-    public HashMap<Vertex, Set<Vertex>> triangulate(Solution s) {
-        Graph h = g.copy();
+    public HashMap<Vertex, Set<Vertex>> triangulate(Solution s, Graph g) {
         HashMap<Vertex, Set<Vertex>> successors = new HashMap<>();
         HashSet<Vertex> masked = new HashSet<>();
 
         for (Vertex v: s.ordering) {
-            Set<Vertex> neighborhood = h.neighborhood(v);
+            Set<Vertex> neighborhood = g.neighborhood(v);
             neighborhood.removeAll(masked);
             successors.put(v,neighborhood);
-            h.makeClique(neighborhood);
+            g.makeClique(neighborhood);
             masked.add(v);
-
         }
 
         return successors;
     }
 
     public int score(HashMap<Vertex, Set<Vertex>> successors){
-        int n = g.vertices.size();
+        int n = successors.keySet().size();
         List<Integer> sizes = successors.values().stream().map(s -> s.size()).collect(Collectors.toList());
         int w = Collections.max(sizes);
         int succ = sizes.stream().mapToInt(i -> i^2).sum();
@@ -122,13 +84,13 @@ public class LocalSearch {
         }
     }
 
-    public ArrayList<Vertex> initialOrdering(){
+    public ArrayList<Vertex> initialOrdering(Graph g){
         ArrayList<Vertex> ordering = new ArrayList<>();
         ordering.addAll(g.vertices.values());
         return ordering;
     }
 
-    public ArrayList<Vertex> maximumMinimumDegree(){
+    public ArrayList<Vertex> maximumMinimumDegree(Graph g){
         ArrayList<Vertex> ordering = new ArrayList<>();
         Collection<Vertex> vertices = new ArrayList<>(g.vertices.values());
         HashSet<Vertex> masked = new HashSet<>();
