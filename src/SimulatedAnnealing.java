@@ -5,18 +5,14 @@ public class SimulatedAnnealing extends LocalSearch {
 
     public double T;
     public double alpha;
-    public int Q;
 
-    public int iteration;
     public Random random;
 
-    public SimulatedAnnealing(double T, double alpha, int Q, int seed){
+    public SimulatedAnnealing(double T, double alpha, int seed){
         super();
 
         this.T = T;
         this.alpha = alpha;
-        this.Q = Q;
-        this.iteration = 0;
 
         this.random = new Random(seed);
     }
@@ -32,7 +28,7 @@ public class SimulatedAnnealing extends LocalSearch {
             ArrayList<Solution> neighbors = neighborhood(s, successors);
             Collections.shuffle(neighbors, random);
 
-//            System.out.println("Score:" + score + ", Treewidth:" + treeWidth(successors) + ", T:" + T);
+            System.out.println("Score:" + score + ", Treewidth:" + treeWidth(successors) + ", T:" + T);
 
             for(Solution neighbor: neighbors){
                 HashMap<Vertex, Set<Vertex>> neighborSuccessors = triangulate(neighbor, g.copy());
@@ -42,11 +38,10 @@ public class SimulatedAnnealing extends LocalSearch {
                     s = neighbor;
                     break;
                 } else {
-                    double lambda = (neighborScore - score) / T;
+                    int diff = score-neighborScore;
+                    double lambda = diff != 0 ? -diff : 1 / T;
                     double x = Math.log(1-random.nextDouble())/(-lambda);
                     double p = random.nextDouble();
-
-                    System.out.println("x:" + x + ", p:" + p + ", lambda:" + lambda);
 
                     if(x < p){
                         s = neighbor;
@@ -55,11 +50,7 @@ public class SimulatedAnnealing extends LocalSearch {
 
             }
 
-            if(iteration % Q == 0){
-                T = T * alpha;
-            }
-
-            iteration++;
+            T = T * alpha;
         }
     }
 }
