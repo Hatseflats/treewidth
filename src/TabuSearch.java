@@ -16,7 +16,7 @@ public class TabuSearch extends LocalSearch {
 
     public void run(Graph g){
         int i = 0;
-        int a = 50;
+        int a = 10;
 
         LinkedList<Solution> tabuList = new LinkedList<>();
 
@@ -31,7 +31,7 @@ public class TabuSearch extends LocalSearch {
                 tabuList.poll();
             }
 
-            ArrayList<Solution> neighbors = neighborhood(s, successors, tabuList);
+            ArrayList<Solution> neighbors = neighborhood(s, successors);
             ArrayList<HashMap<Vertex, Set<Vertex>>> successorSets = (ArrayList<HashMap<Vertex, Set<Vertex>>>)
                     neighbors.parallelStream().map(sol -> triangulate(sol,g.copy())).collect(Collectors.toList());
 

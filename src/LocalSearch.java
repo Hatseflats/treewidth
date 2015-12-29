@@ -31,7 +31,7 @@ abstract class LocalSearch {
         return (n*n)*(w*w)+succ;
     }
 
-    public ArrayList<Solution> neighborhood(Solution s, HashMap<Vertex, Set<Vertex>> successors, LinkedList<Solution> tabuList){
+    public ArrayList<Solution> neighborhood(Solution s, HashMap<Vertex, Set<Vertex>> successors){
         ArrayList<Solution> neighbors = new ArrayList<>();
         int currentIndex = 0;
 
@@ -42,14 +42,14 @@ abstract class LocalSearch {
             if(maxPred != -1){
                 Solution s1 = s.copy();
                 s1.swap(currentIndex, maxPred);
-                if(!neighbors.contains(s1) && !tabuList.contains(s1)){
+                if(!neighbors.contains(s1)){
                     neighbors.add(s1);
                 }
             }
             if(minSucc != -1){
                 Solution s2 = s.copy();
                 s2.swap(currentIndex, minSucc);
-                if(!neighbors.contains(s2) && !tabuList.contains(s2)){
+                if(!neighbors.contains(s2)){
                     neighbors.add(s2);
                 }
             }

@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         GraphReader gr = new GraphReader("myciel5.col");
         Graph g = gr.read();
-        LocalSearch localSearch = new TabuSearch(5);
+        LocalSearch localSearch = new SimulatedAnnealing(5, 0.95, 2, 123);
         long startTime = System.nanoTime();
         localSearch.run(g);
         long endTime = System.nanoTime();
