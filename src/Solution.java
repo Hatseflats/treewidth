@@ -23,4 +23,9 @@ public class Solution {
         Collections.swap(ordering, i, j);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        Solution s = (Solution) obj;
+        return s.ordering.equals(ordering);
+    }
 }

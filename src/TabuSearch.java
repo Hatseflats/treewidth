@@ -8,30 +8,32 @@ import java.util.stream.IntStream;
 public class TabuSearch extends LocalSearch {
     public int tabuSize;
 
-    public TabuSearch(int tabuSize){
-        super();
+    public TabuSearch(Solution initialSolution, int tabuSize){
+        super(initialSolution);
 
         this.tabuSize = tabuSize;
     }
 
-    public void run(Graph g){
+    public Solution run(Graph g){
         int i = 0;
-        int a = 10;
+        int a = 30;
 
         LinkedList<Solution> tabuList = new LinkedList<>();
 
-        Solution s = new Solution(maximumMinimumDegree(g));
-        HashMap<Vertex, Set<Vertex>> successors = triangulate(s, g.copy());
+        Solution currentSolution = initialSolution;
+        HashMap<Vertex, Set<Vertex>> successors = triangulate(currentSolution, g.copy());
 
         int minScore = score(successors);
 
         while (i < a){
-            tabuList.push(s);
+            tabuList.push(currentSolution);
             if(tabuList.size() > tabuSize){
                 tabuList.poll();
             }
 
-            ArrayList<Solution> neighbors = neighborhood(s, successors);
+            ArrayList<Solution> neighbors = neighborhood(currentSolution, successors);
+            neighbors.removeAll(tabuList);
+
             ArrayList<HashMap<Vertex, Set<Vertex>>> successorSets = (ArrayList<HashMap<Vertex, Set<Vertex>>>)
                     neighbors.parallelStream().map(sol -> triangulate(sol,g.copy())).collect(Collectors.toList());
 
@@ -39,11 +41,13 @@ public class TabuSearch extends LocalSearch {
             int minIndex = IntStream.range(0,scores.size()).reduce((x, y) -> scores.get(x) > scores.get(y) ? y : x).getAsInt();
             minScore = scores.get(minIndex);
             successors = successorSets.get(minIndex);
-            s = neighbors.get(minIndex);
+            currentSolution = neighbors.get(minIndex);
 
             System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
 
             i++;
         }
+
+        return currentSolution;
     }
 }

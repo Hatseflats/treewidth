@@ -5,7 +5,13 @@ import java.util.stream.IntStream;
 
 abstract class LocalSearch {
 
-    abstract void run(Graph g);
+    public Solution initialSolution;
+
+    public LocalSearch(Solution initialSolution){
+        this.initialSolution = initialSolution;
+    }
+
+    abstract Solution run(Graph g);
 
     public HashMap<Vertex, Set<Vertex>> triangulate(Solution s, Graph g) {
         HashMap<Vertex, Set<Vertex>> successors = new HashMap<>();
@@ -87,29 +93,6 @@ abstract class LocalSearch {
     public ArrayList<Vertex> initialOrdering(Graph g){
         ArrayList<Vertex> ordering = new ArrayList<>();
         ordering.addAll(g.vertices.values());
-        return ordering;
-    }
-
-    public ArrayList<Vertex> maximumMinimumDegree(Graph g){
-        ArrayList<Vertex> ordering = new ArrayList<>();
-        Collection<Vertex> vertices = new ArrayList<>(g.vertices.values());
-        HashSet<Vertex> masked = new HashSet<>();
-
-        while(vertices.size() != 0){
-            Vertex v = vertices.stream().reduce((u,w) -> {
-                Set<Vertex> neighborhoodU = g.neighborhood(u);
-                Set<Vertex> neighborhoodW = g.neighborhood(w);
-                neighborhoodU.removeAll(masked);
-                neighborhoodW.removeAll(masked);
-
-                return neighborhoodU.size() < neighborhoodW.size() ? u : w;
-            }).get();
-
-            ordering.add(v);
-            vertices.remove(v);
-            masked.add(v);
-        }
-
         return ordering;
     }
 
