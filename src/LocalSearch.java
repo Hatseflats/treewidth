@@ -5,13 +5,7 @@ import java.util.stream.IntStream;
 
 abstract class LocalSearch {
 
-    public Solution initialSolution;
-
-    public LocalSearch(Solution initialSolution){
-        this.initialSolution = initialSolution;
-    }
-
-    abstract Solution run(Graph g);
+    abstract Solution run(Graph g, Solution initialSolution);
 
     public HashMap<Vertex, Set<Vertex>> triangulate(Solution s, Graph g) {
         HashMap<Vertex, Set<Vertex>> successors = new HashMap<>();

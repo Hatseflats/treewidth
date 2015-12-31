@@ -8,13 +8,11 @@ import java.util.stream.IntStream;
 public class TabuSearch extends LocalSearch {
     public int tabuSize;
 
-    public TabuSearch(Solution initialSolution, int tabuSize){
-        super(initialSolution);
-
+    public TabuSearch(int tabuSize){
         this.tabuSize = tabuSize;
     }
 
-    public Solution run(Graph g){
+    public Solution run(Graph g, Solution initialSolution){
         int i = 0;
         int a = 30;
 

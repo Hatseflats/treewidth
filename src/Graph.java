@@ -113,11 +113,6 @@ public class Graph {
                 }
 
                 int newDegree = oldDegree-1;
-
-                System.out.println(buckets);
-                System.out.println(degree);
-                System.out.println(w + " " + oldDegree + " " + newDegree);
-
                 degree.replace(w, newDegree);
 
                 ArrayList<Vertex> oldBucket = buckets.get(oldDegree);
