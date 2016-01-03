@@ -41,7 +41,7 @@ public class TabuSearch extends LocalSearch {
             successors = successorSets.get(minIndex);
             currentSolution = neighbors.get(minIndex);
 
-            System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
+//            System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
 
             i++;
         }
