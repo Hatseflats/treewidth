@@ -1,3 +1,5 @@
+package Graph;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,29 +59,6 @@ public class Graph {
         return h;
     }
 
-    public ArrayList<Vertex> maximumMinimumDegree(){
-        ArrayList<Vertex> ordering = new ArrayList<>();
-        Collection<Vertex> verticesCopy = new ArrayList<>(vertices.values());
-        HashSet<Vertex> masked = new HashSet<>();
-
-        while(verticesCopy.size() != 0){
-            Vertex v = verticesCopy.stream().reduce((u, w) -> {
-                Set<Vertex> neighborhoodU = neighborhood(u);
-                Set<Vertex> neighborhoodW = neighborhood(w);
-                neighborhoodU.removeAll(masked);
-                neighborhoodW.removeAll(masked);
-
-                return neighborhoodU.size() < neighborhoodW.size() ? u : w;
-            }).get();
-
-            ordering.add(v);
-            verticesCopy.remove(v);
-            masked.add(v);
-        }
-
-        return ordering;
-    }
-
     public ArrayList<Vertex> maxMinDegree(){
         ArrayList<Vertex> ordering = new ArrayList<>();
         HashMap<Vertex, Integer> degree = new HashMap<>();
@@ -97,7 +76,7 @@ public class Graph {
 
         while(buckets.size() != 0){
             int minDegree = Collections.min(buckets.keySet());
-            Vertex v = buckets.get(minDegree).remove(0);
+            Vertex v = buckets.get(minDegree).remove(buckets.get(minDegree).size()-1);
             degree.replace(v,0);
             Set<Vertex> neighbors = neighborhood(v);
 

@@ -92,7 +92,7 @@ def read(path):
 		lines = [line.rstrip('\n') for line in f.readlines() if line[0] == 'e']
 		edges = [(int(edge[1]),int(edge[2])) for edge in [line.split() for line in lines]]
 	
-	g = Graph(directed=False)
+	g = Graph.Graph(directed=False)
 	g.add_edge_list(edges)
 	g.remove_vertex(0)
 

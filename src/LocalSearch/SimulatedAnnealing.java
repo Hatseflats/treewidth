@@ -1,5 +1,9 @@
+package LocalSearch;
+
+import Graph.Graph;
+import Graph.Vertex;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SimulatedAnnealing extends LocalSearch {
 

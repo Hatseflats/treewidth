@@ -1,6 +1,10 @@
+package LocalSearch;
+
+import Graph.Graph;
+import Graph.Vertex;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 public class Solution {
     public ArrayList<Vertex> ordering;

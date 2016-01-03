@@ -1,3 +1,5 @@
+package Graph;
+
 public class Vertex {
     public int id;
     public boolean mask;

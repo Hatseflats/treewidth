@@ -1,3 +1,8 @@
+package LocalSearch;
+
+import Graph.Graph;
+import Graph.Vertex;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,7 +46,7 @@ public class TabuSearch extends LocalSearch {
             successors = successorSets.get(minIndex);
             currentSolution = neighbors.get(minIndex);
 
-//            System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
+            System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
 
             i++;
         }

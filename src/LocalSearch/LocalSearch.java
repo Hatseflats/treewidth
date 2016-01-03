@@ -1,11 +1,14 @@
-import java.lang.reflect.Array;
+package LocalSearch;
+
+import Graph.Graph;
+import Graph.Vertex;
+
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-abstract class LocalSearch {
+public abstract class LocalSearch {
 
-    abstract Solution run(Graph g, Solution initialSolution);
+    public abstract Solution run(Graph g, Solution initialSolution);
 
     public HashMap<Vertex, Set<Vertex>> triangulate(Solution s, Graph g) {
         HashMap<Vertex, Set<Vertex>> successors = new HashMap<>();
@@ -83,11 +86,4 @@ abstract class LocalSearch {
             return s.ordering.indexOf(candidates.get(0));
         }
     }
-
-    public ArrayList<Vertex> initialOrdering(Graph g){
-        ArrayList<Vertex> ordering = new ArrayList<>();
-        ordering.addAll(g.vertices.values());
-        return ordering;
-    }
-
 }
