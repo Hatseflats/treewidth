@@ -9,14 +9,13 @@ public class SimulatedAnnealing extends LocalSearch {
 
     public double T;
     public double alpha;
-
     public Random random;
 
-    public SimulatedAnnealing(double T, double alpha, int seed){
+    public SimulatedAnnealing(double T, double alpha, Random random){
 
         this.T = T;
         this.alpha = alpha;
-        this.random = new Random(seed);
+        this.random = random;
     }
 
     public Solution run(Graph g, Solution initialSolution) {
@@ -28,7 +27,7 @@ public class SimulatedAnnealing extends LocalSearch {
         HashMap<Vertex, Set<Vertex>> currentSuccessors;
         int currentScore;
 
-        while(lastImprovement <= 200){
+        while(lastImprovement <= 400){
             currentSuccessors = triangulate(currentSolution, g.copy());
             currentScore = score(currentSuccessors);
 

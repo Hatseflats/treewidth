@@ -5,6 +5,7 @@ import Graph.Vertex;
 import LocalSearch.LocalSearch;
 import LocalSearch.Solution;
 import LocalSearch.TabuSearch;
+import LocalSearch.SimulatedAnnealing;
 
 import java.util.*;
 
@@ -12,13 +13,15 @@ public class Main {
     public static void main(String[] args) {
         GraphReader gr = new GraphReader("myciel5.col");
         Graph g = gr.read();
-        Solution initialSolution = new Solution(g.maxMinDegree());
-//        LocalSearch.LocalSearch LS = new LocalSearch.LocalSearch.SimulatedAnnealing(5000, 0.99, 909090999);
+//        Solution initialSolution = new Solution(g.maxMinDegree());
+        Solution initialSolution = new Solution(new ArrayList<Vertex>(g.adjacencyList.keySet()));
+        Random random = new Random(989898989);
+//        LocalSearch LS = new TabuSearch(21);
 
+        ArrayList<ArrayList<Vertex>> solutions = new ArrayList<>();
 
-        LocalSearch LS = new TabuSearch(21);
-
-        for(int i=0; i<1; i++) {
+        for(int i=0; i<10; i++) {
+            LocalSearch LS = new SimulatedAnnealing(100000, 0.999, random);
             long startTime = System.nanoTime();
             Solution s = LS.run(g, initialSolution);
             HashMap<Vertex, Set<Vertex>> currentSuccessors = LS.triangulate(s, g.copy());
@@ -27,7 +30,10 @@ public class Main {
             long endTime = System.nanoTime();
             double duration = (endTime - startTime) / 1000000000.0;
             System.out.println(duration);
+            solutions.add(s.ordering);
         }
+
+        System.out.println(solutions);
 
     }
 }
