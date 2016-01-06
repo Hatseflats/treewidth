@@ -6,8 +6,8 @@ import Graph.Vertex;
 public class Tree {
     public Node root;
 
-    public Tree(){
-        root = new Node();
+    public Tree(Node root){
+        this.root = root;
     }
 
 }
