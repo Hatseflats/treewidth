@@ -1,15 +1,26 @@
 package FrequentItemSetMining;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import Graph.Vertex;
 
 public class Node {
     private Vertex vertex;
-    private ArrayList<Node> children;
+    private List<Node> children;
+    private Node parent;
     private int support;
 
     public Node() {
         this.children = new ArrayList<>();
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 
     public int getSupport() {
@@ -20,11 +31,11 @@ public class Node {
         this.support = support;
     }
 
-    public ArrayList<Node> getChildren() {
+    public List<Node> getChildren() {
         return children;
     }
 
-    public void setChildren(ArrayList<Node> children) {
+    public void setChildren(List<Node> children) {
         this.children = children;
     }
 
@@ -40,4 +51,12 @@ public class Node {
         this.vertex = vertex;
     }
 
+    @Override
+    public String toString() {
+        if(vertex == null){
+            return "root";
+        } else {
+            return ""+this.vertex.id;
+        }
+    }
 }

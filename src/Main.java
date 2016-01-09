@@ -1,3 +1,5 @@
+import FrequentItemSetMining.Node;
+import FrequentItemSetMining.Tree;
 import Graph.Graph;
 import Graph.GraphReader;
 import Graph.Vertex;
@@ -17,12 +19,12 @@ public class Main {
         Solution initialSolution = new Solution(g.maxMinDegree());
 //        Solution initialSolution = new Solution(new ArrayList<Vertex>(g.adjacencyList.keySet()));
 //        System.out.println(initialSolution.ordering);
-        Random random = new Random(13999234);
+        Random random = new Random(545445545);
 //        LocalSearch LS = new TabuSearch(21);
 
         ArrayList<ArrayList<Vertex>> solutions = new ArrayList<>();
 
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<5; i++) {
             LocalSearch LS = new SimulatedAnnealing(100, 0.99, random);
             long startTime = System.nanoTime();
             Solution s = LS.run(g, initialSolution);
@@ -33,12 +35,15 @@ public class Main {
             double duration = (endTime - startTime) / 1000000000.0;
 //            System.out.println(duration);
             solutions.add(s.ordering);
+            System.out.println(s.ordering);
         }
 
 
-        FrequentSequenceMiner freq = new FrequentSequenceMiner(solutions, g.adjacencyList);
-        ArrayList<Pattern> patterns = freq.freqAdjVertex(10);
 
-        System.out.println(patterns);
+
+        FrequentSequenceMiner freq = new FrequentSequenceMiner(solutions, g.adjacencyList, 2);
+        Tree tree = freq.freqAdjVertex();
+
+//        System.out.println(tree.root.getChildren().get(1).getChildren());
     }
 }
