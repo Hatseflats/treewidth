@@ -1,4 +1,4 @@
-package FrequentItemSetMining;
+package FrequentPathMiner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,5 +58,9 @@ public class Node {
         } else {
             return ""+this.vertex.id;
         }
+    }
+
+    public boolean isLeaf(){
+        return children.size() == 0;
     }
 }

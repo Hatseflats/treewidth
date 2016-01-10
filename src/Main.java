@@ -1,14 +1,16 @@
-import FrequentItemSetMining.Node;
-import FrequentItemSetMining.Tree;
+import FrequentPathMiner.Tree;
 import Graph.Graph;
 import Graph.GraphReader;
 import Graph.Vertex;
 
 import LocalSearch.LocalSearch;
+import LocalSearch.ScoreStrategy.NormalScore;
+import LocalSearch.ScoreStrategy.ScoreStrategy;
 import LocalSearch.Solution;
 import LocalSearch.SimulatedAnnealing;
 
-import FrequentItemSetMining.FrequentSequenceMiner;
+import FrequentPathMiner.FrequentPathMiner;
+import FrequentPathMiner.Path;
 
 import java.util.*;
 
@@ -17,45 +19,26 @@ public class Main {
         GraphReader gr = new GraphReader("myciel3.col");
         Graph g = gr.read();
         Solution initialSolution = new Solution(g.maxMinDegree());
-//        Solution initialSolution = new Solution(new ArrayList<Vertex>(g.adjacencyList.keySet()));
-//        System.out.println(initialSolution.ordering);
         Random random = new Random(545445545);
-//        LocalSearch LS = new TabuSearch(21);
+        ScoreStrategy score = new NormalScore();
 
         ArrayList<ArrayList<Vertex>> solutions = new ArrayList<>();
 
-        for(int i=0; i<5; i++) {
-            LocalSearch LS = new SimulatedAnnealing(100, 0.99, random);
-            long startTime = System.nanoTime();
+        for(int i=0; i<10; i++) {
+            LocalSearch LS = new SimulatedAnnealing(score, 100, 0.99, random);
             Solution s = LS.run(g, initialSolution);
-            HashMap<Vertex, Set<Vertex>> currentSuccessors = LS.triangulate(s, g.copy());
 
-//            System.out.println(LS.treeWidth(currentSuccessors) + " - " + s.ordering);
-            long endTime = System.nanoTime();
-            double duration = (endTime - startTime) / 1000000000.0;
-//            System.out.println(duration);
+            HashMap<Vertex, Set<Vertex>> currentSuccessors = LS.triangulate(s, g.copy());
+            System.out.println(LS.treeWidth(currentSuccessors) + " - " + s.ordering);
+
             solutions.add(s.ordering);
-            System.out.println(s.ordering);
         }
 
+        FrequentPathMiner freq = new FrequentPathMiner(solutions, g.adjacencyList, 2);
+        Tree tree = freq.frequentPathTree();
+        for(Path p:tree.getPaths()){
+            System.out.println(p);
+        }
 
-
-        List<Vertex> s = new ArrayList<>();
-        s.add(g.vertices.get(10));
-        s.add(g.vertices.get(3));
-        s.add(g.vertices.get(5));
-
-
-
-
-
-
-
-        FrequentSequenceMiner freq = new FrequentSequenceMiner(solutions, g.adjacencyList, 2);
-        Tree tree = freq.freqAdjVertex();
-
-//        System.out.println(freq.count(s));
-
-//        System.out.println(tree.root.getChildren().get(1).getChildren());
     }
 }

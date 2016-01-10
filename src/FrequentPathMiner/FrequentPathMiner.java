@@ -1,24 +1,24 @@
-package FrequentItemSetMining;
+package FrequentPathMiner;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import Graph.Vertex;
 
-public class FrequentSequenceMiner {
+public class FrequentPathMiner {
     public ArrayList<ArrayList<Vertex>> database;
     public HashMap<Vertex, Set<Vertex>> adjacencyList;
     public int dbSize;
     public int minSupport;
 
-    public FrequentSequenceMiner(ArrayList<ArrayList<Vertex>> database, HashMap<Vertex, Set<Vertex>> adjacencyList, int minSupport){
+    public FrequentPathMiner(ArrayList<ArrayList<Vertex>> database, HashMap<Vertex, Set<Vertex>> adjacencyList, int minSupport){
         this.database = database;
         this.adjacencyList = adjacencyList;
         this.dbSize = database.size();
         this.minSupport = minSupport;
     }
 
-    public Tree freqAdjVertex(){
+    public Tree frequentPathTree(){
         Tree tree = initTree();
 
         for(Node node:tree.root.getChildren()){
@@ -39,7 +39,7 @@ public class FrequentSequenceMiner {
 
             List<Vertex> sequence = pattern.stream().map(n -> n.getVertex()).collect(Collectors.toList());
             sequence.add(candidate.getVertex());
-            System.out.println(count(sequence) + " - " + sequence);
+//            System.out.println(count(sequence) + " - " + sequence);
             int supp = count(sequence);
             if(supp >= minSupport){
                 Node extension = new Node();
@@ -51,19 +51,6 @@ public class FrequentSequenceMiner {
                 extendTree(extension, new LinkedList<>(candidates));
             }
         }
-    }
-
-    public boolean treeContains(Iterator<Vertex> subSequence, Node node){
-        if(!subSequence.hasNext()){
-            return true;
-        }
-        Vertex v = subSequence.next();
-        for(Node child: node.getChildren()){
-            if(child.getVertex() == v){
-                return treeContains(subSequence, child);
-            }
-        }
-        return false;
     }
 
     public ArrayList<Node> getPattern(ArrayList<Node> pattern, Node node){
