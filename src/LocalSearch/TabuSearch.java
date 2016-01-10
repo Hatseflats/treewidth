@@ -2,6 +2,7 @@ package LocalSearch;
 
 import Graph.Graph;
 import Graph.Vertex;
+import LocalSearch.ScoreStrategy.ScoreStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,8 @@ import java.util.stream.IntStream;
 public class TabuSearch extends LocalSearch {
     public int tabuSize;
 
-    public TabuSearch(int tabuSize){
+    public TabuSearch(ScoreStrategy scoreStrategy, int tabuSize){
+        super(scoreStrategy);
         this.tabuSize = tabuSize;
     }
 
@@ -26,7 +28,7 @@ public class TabuSearch extends LocalSearch {
         Solution currentSolution = initialSolution;
         HashMap<Vertex, Set<Vertex>> successors = triangulate(currentSolution, g.copy());
 
-        int minScore = score(successors);
+        int minScore = scoreStrategy.score(successors);
 
         while (i < a){
             tabuList.push(currentSolution);
@@ -40,7 +42,7 @@ public class TabuSearch extends LocalSearch {
             ArrayList<HashMap<Vertex, Set<Vertex>>> successorSets = (ArrayList<HashMap<Vertex, Set<Vertex>>>)
                     neighbors.parallelStream().map(sol -> triangulate(sol,g.copy())).collect(Collectors.toList());
 
-            ArrayList<Integer> scores = (ArrayList<Integer>) successorSets.parallelStream().map(this::score).collect(Collectors.toList());
+            ArrayList<Integer> scores = (ArrayList<Integer>) successorSets.parallelStream().map(scoreStrategy::score).collect(Collectors.toList());
             int minIndex = IntStream.range(0,scores.size()).reduce((x, y) -> scores.get(x) > scores.get(y) ? y : x).getAsInt();
             minScore = scores.get(minIndex);
             successors = successorSets.get(minIndex);

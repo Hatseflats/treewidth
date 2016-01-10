@@ -1,9 +1,6 @@
 package FrequentItemSetMining;
 
-import java.lang.reflect.Array;
-import java.security.cert.Extension;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import Graph.Vertex;
@@ -24,65 +21,36 @@ public class FrequentSequenceMiner {
     public Tree freqAdjVertex(){
         Tree tree = initTree();
 
-        buildTree(tree.root.getChildren());
+        for(Node node:tree.root.getChildren()){
+            extendTree(node,new LinkedList<>(tree.root.getChildren()));
+        }
 
         return tree;
     }
 
-    public void buildTree(List<Node> layer){
-        List<List<Node>> nextLayers = new ArrayList<>();
-        for(Node node:layer){
-            ArrayList<Node> extensions = extendTree(node, layer);
-            node.setChildren(extensions);
-            nextLayers.add(extensions);
-        }
+    public void extendTree(Node node, List<Node> candidates){
+        candidates.remove(node);
+        ArrayList<Node> pattern = getPattern(new ArrayList<>(), node);
 
-        for(List<Node> nextLayer:nextLayers){
-            if(nextLayer.size() > 0){
-                buildTree(nextLayer);
-            }
-        }
-    }
-
-    public ArrayList<Node> extendTree(Node node, List<Node> layer){
-        ArrayList<Node> candidates = generateCanidates(node, layer);
-        ArrayList<Node> pattern = getPattern(new ArrayList<Node>(), node);
-        ArrayList<Node> extensions = new ArrayList<>();
-
-        for(Node candidate: candidates){
-            if(candidate.getVertex().id == node.getVertex().id){
-                continue;
-            }
-
-            ArrayList<Node> extension = new ArrayList<>(pattern);
-            extension.add(candidate);
-            List<Vertex> sequence = extension.stream().map(n -> n.getVertex()).collect(Collectors.toList());
-            System.out.println(count(sequence) + " - " + sequence);
-            int supp = count(sequence);
-            if(supp >= minSupport){
-                candidate.setParent(node);
-                candidate.setSupport(supp);
-                extensions.add(candidate);
-            }
-        }
-
-        return extensions;
-    }
-
-    public ArrayList<Node> generateCanidates(Node node, List<Node> layer){
-        ArrayList<Node> candidates = new ArrayList<>();
-
-        for(Node candidate: layer){
+        for(Node candidate:candidates){
             if(!adjacent(node.getVertex(),candidate.getVertex())){
                 continue;
             }
 
-            Node extension = new Node();
-            extension.setSupport(0);
-            extension.setVertex(candidate.getVertex());
-            candidates.add(extension);
+            List<Vertex> sequence = pattern.stream().map(n -> n.getVertex()).collect(Collectors.toList());
+            sequence.add(candidate.getVertex());
+            System.out.println(count(sequence) + " - " + sequence);
+            int supp = count(sequence);
+            if(supp >= minSupport){
+                Node extension = new Node();
+                extension.setVertex(candidate.getVertex());
+                extension.setParent(node);
+                extension.setSupport(supp);
+                node.addChild(extension);
+
+                extendTree(extension, new LinkedList<>(candidates));
+            }
         }
-        return candidates;
     }
 
     public boolean treeContains(Iterator<Vertex> subSequence, Node node){

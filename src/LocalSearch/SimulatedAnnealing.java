@@ -2,6 +2,7 @@ package LocalSearch;
 
 import Graph.Graph;
 import Graph.Vertex;
+import LocalSearch.ScoreStrategy.ScoreStrategy;
 
 import java.util.*;
 
@@ -11,8 +12,8 @@ public class SimulatedAnnealing extends LocalSearch {
     public double alpha;
     public Random random;
 
-    public SimulatedAnnealing(double T, double alpha, Random random){
-
+    public SimulatedAnnealing(ScoreStrategy scoreStrategy, double T, double alpha, Random random){
+        super(scoreStrategy);
         this.T = T;
         this.alpha = alpha;
         this.random = random;
@@ -29,7 +30,7 @@ public class SimulatedAnnealing extends LocalSearch {
 
         while(lastImprovement <= 400){
             currentSuccessors = triangulate(currentSolution, g.copy());
-            currentScore = score(currentSuccessors);
+            currentScore = scoreStrategy.score(currentSuccessors);
 
             if(currentScore < bestScore){
                 bestScore = currentScore;
@@ -43,7 +44,7 @@ public class SimulatedAnnealing extends LocalSearch {
 
             for(Solution neighbor: neighbors){
                 HashMap<Vertex, Set<Vertex>> neighborSuccessors = triangulate(neighbor, g.copy());
-                int neighborScore = score(neighborSuccessors);
+                int neighborScore = scoreStrategy.score(neighborSuccessors);
 
                 if(neighborScore < currentScore || acceptDeterioration(currentScore, neighborScore)){
                     currentSolution = neighbor;

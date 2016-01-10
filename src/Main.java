@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        GraphReader gr = new GraphReader("myciel5.col");
+        GraphReader gr = new GraphReader("myciel3.col");
         Graph g = gr.read();
         Solution initialSolution = new Solution(g.maxMinDegree());
 //        Solution initialSolution = new Solution(new ArrayList<Vertex>(g.adjacencyList.keySet()));
@@ -40,9 +40,21 @@ public class Main {
 
 
 
+        List<Vertex> s = new ArrayList<>();
+        s.add(g.vertices.get(10));
+        s.add(g.vertices.get(3));
+        s.add(g.vertices.get(5));
+
+
+
+
+
+
 
         FrequentSequenceMiner freq = new FrequentSequenceMiner(solutions, g.adjacencyList, 2);
         Tree tree = freq.freqAdjVertex();
+
+//        System.out.println(freq.count(s));
 
 //        System.out.println(tree.root.getChildren().get(1).getChildren());
     }

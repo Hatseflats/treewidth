@@ -2,11 +2,17 @@ package LocalSearch;
 
 import Graph.Graph;
 import Graph.Vertex;
+import LocalSearch.ScoreStrategy.ScoreStrategy;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class LocalSearch {
+    public ScoreStrategy scoreStrategy;
+
+    public LocalSearch(ScoreStrategy scoreStrategy){
+        this.scoreStrategy = scoreStrategy;
+    }
 
     public abstract Solution run(Graph g, Solution initialSolution);
 
@@ -23,15 +29,6 @@ public abstract class LocalSearch {
         }
 
         return successors;
-    }
-
-    public int score(HashMap<Vertex, Set<Vertex>> successors){
-        int n = successors.keySet().size();
-        List<Integer> sizes = successors.values().stream().map(s -> s.size()).collect(Collectors.toList());
-        int w = Collections.max(sizes);
-        int succ = sizes.stream().mapToInt(i -> i^2).sum();
-
-        return (n*n)*(w*w)+succ;
     }
 
     public ArrayList<Solution> neighborhood(Solution s, HashMap<Vertex, Set<Vertex>> successors){
