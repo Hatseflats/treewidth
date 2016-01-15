@@ -11,12 +11,14 @@ public class SimulatedAnnealing extends LocalSearch {
     public double T;
     public double alpha;
     public Random random;
+    public int nonImprovingIterations;
 
-    public SimulatedAnnealing(ScoreStrategy scoreStrategy, double T, double alpha, Random random){
+    public SimulatedAnnealing(ScoreStrategy scoreStrategy, double T, double alpha, Random random, int nonImprovingIterations){
         super(scoreStrategy);
         this.T = T;
         this.alpha = alpha;
         this.random = random;
+        this.nonImprovingIterations = nonImprovingIterations;
     }
 
     public Solution run(Graph g, Solution initialSolution) {
@@ -25,12 +27,11 @@ public class SimulatedAnnealing extends LocalSearch {
         int bestScore = Integer.MAX_VALUE;
         int lastImprovement = 0;
 
-        HashMap<Vertex, Set<Vertex>> currentSuccessors;
         int currentScore;
 
-        while(lastImprovement <= 400){
-            currentSuccessors = triangulate(currentSolution, g.copy());
-            currentScore = scoreStrategy.score(currentSuccessors);
+        while(lastImprovement <= nonImprovingIterations){
+            currentSolution.successors =  triangulate(currentSolution, g.copy());;
+            currentScore = scoreStrategy.score(currentSolution);
 
             if(currentScore < bestScore){
                 bestScore = currentScore;
@@ -38,13 +39,13 @@ public class SimulatedAnnealing extends LocalSearch {
                 lastImprovement = 0;
             }
 
-            ArrayList<Solution> neighbors = neighborhood(currentSolution, currentSuccessors);
+            ArrayList<Solution> neighbors = neighborhood(currentSolution);
             Collections.shuffle(neighbors, random);
-//            System.out.println("Score:" + currentScore + ", Treewidth:" + treeWidth(currentSuccessors) + ", T:" + T + ", lastImprovement:" + lastImprovement);
+//            System.out.println("Score:" + currentScore + ", Treewidth:" + treeWidth(currentSolution.successors) + ", T:" + T + ", lastImprovement:" + lastImprovement);
 
             for(Solution neighbor: neighbors){
-                HashMap<Vertex, Set<Vertex>> neighborSuccessors = triangulate(neighbor, g.copy());
-                int neighborScore = scoreStrategy.score(neighborSuccessors);
+                neighbor.successors = triangulate(neighbor, g.copy());
+                int neighborScore = scoreStrategy.score(neighbor);
 
                 if(neighborScore < currentScore || acceptDeterioration(currentScore, neighborScore)){
                     currentSolution = neighbor;

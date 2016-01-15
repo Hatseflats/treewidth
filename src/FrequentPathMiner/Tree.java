@@ -19,7 +19,9 @@ public class Tree {
             extension.add(child.getVertex());
             extension.support = child.getSupport();
             paths.add(extension);
-            generatePaths(paths, extension, child);
+            if(extension.path.size() < 2) {
+                generatePaths(paths, extension, child);
+            }
         }
 
         return paths;

@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 import Graph.Vertex;
 
 public class FrequentPathMiner {
-    public ArrayList<ArrayList<Vertex>> database;
+    public List<ArrayList<Vertex>> database;
     public HashMap<Vertex, Set<Vertex>> adjacencyList;
     public int dbSize;
     public int minSupport;
 
-    public FrequentPathMiner(ArrayList<ArrayList<Vertex>> database, HashMap<Vertex, Set<Vertex>> adjacencyList, int minSupport){
+    public FrequentPathMiner(List<ArrayList<Vertex>> database, HashMap<Vertex, Set<Vertex>> adjacencyList, int minSupport){
         this.database = database;
         this.adjacencyList = adjacencyList;
         this.dbSize = database.size();
@@ -39,7 +39,7 @@ public class FrequentPathMiner {
 
             List<Vertex> sequence = pattern.stream().map(n -> n.getVertex()).collect(Collectors.toList());
             sequence.add(candidate.getVertex());
-//            System.out.println(count(sequence) + " - " + sequence);
+//            System.out.println(support(sequence) + " - " + sequence);
             int supp = count(sequence);
             if(supp >= minSupport){
                 Node extension = new Node();

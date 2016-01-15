@@ -1,10 +1,7 @@
 package LocalSearch.ScoreStrategy;
 
-import Graph.Vertex;
-
-import java.util.HashMap;
-import java.util.Set;
+import LocalSearch.Solution;
 
 public interface ScoreStrategy {
-    public int score(HashMap<Vertex, Set<Vertex>> successors);
+    int score(Solution s);
 }

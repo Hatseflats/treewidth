@@ -31,13 +31,13 @@ public abstract class LocalSearch {
         return successors;
     }
 
-    public ArrayList<Solution> neighborhood(Solution s, HashMap<Vertex, Set<Vertex>> successors){
+    public ArrayList<Solution> neighborhood(Solution s){
         ArrayList<Solution> neighbors = new ArrayList<>();
         int currentIndex = 0;
 
         for(Vertex v : s.ordering){
-            int maxPred = maxPredecessor(s, v, successors);
-            int minSucc = minSuccessor(s, v, successors.get(v));
+            int maxPred = s.maxPredecessor(v);
+            int minSucc = s.minSuccessor(v);
 
             if(maxPred != -1){
                 Solution s1 = s.copy();
@@ -64,23 +64,4 @@ public abstract class LocalSearch {
         return max;
     }
 
-    public int maxPredecessor(Solution s, Vertex v, HashMap<Vertex, Set<Vertex>> successors){
-        Set<Vertex> keys = successors.keySet();
-        Set<Vertex> candidates = keys.stream().filter(k -> successors.get(k).contains(v)).collect(Collectors.toSet());
-        if(candidates.isEmpty()){
-            return -1;
-        } else {
-            return candidates.stream().mapToInt(s.ordering::indexOf).max().getAsInt();
-        }
-    }
-
-    public int minSuccessor(Solution s, Vertex v, Set<Vertex> succ){
-        int index = s.ordering.indexOf(v);
-        ArrayList<Vertex> candidates = (ArrayList<Vertex>) s.ordering.subList(index+1,s.ordering.size()).stream().filter(succ::contains).collect(Collectors.toList());
-        if(candidates.isEmpty()){
-            return -1;
-        } else {
-            return s.ordering.indexOf(candidates.get(0));
-        }
-    }
 }

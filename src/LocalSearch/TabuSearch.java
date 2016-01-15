@@ -21,14 +21,14 @@ public class TabuSearch extends LocalSearch {
 
     public Solution run(Graph g, Solution initialSolution){
         int i = 0;
-        int a = 30;
+        int a = 100;
 
         LinkedList<Solution> tabuList = new LinkedList<>();
 
         Solution currentSolution = initialSolution;
-        HashMap<Vertex, Set<Vertex>> successors = triangulate(currentSolution, g.copy());
+        currentSolution.successors = triangulate(currentSolution, g.copy());
 
-        int minScore = scoreStrategy.score(successors);
+        int minScore = scoreStrategy.score(currentSolution);
 
         while (i < a){
             tabuList.push(currentSolution);
@@ -36,19 +36,18 @@ public class TabuSearch extends LocalSearch {
                 tabuList.poll();
             }
 
-            ArrayList<Solution> neighbors = neighborhood(currentSolution, successors);
+            ArrayList<Solution> neighbors = neighborhood(currentSolution);
             neighbors.removeAll(tabuList);
 
-            ArrayList<HashMap<Vertex, Set<Vertex>>> successorSets = (ArrayList<HashMap<Vertex, Set<Vertex>>>)
-                    neighbors.parallelStream().map(sol -> triangulate(sol,g.copy())).collect(Collectors.toList());
+            neighbors.parallelStream().forEach(sol -> {
+                sol.successors =  triangulate(sol,g.copy());
+            });
 
-            ArrayList<Integer> scores = (ArrayList<Integer>) successorSets.parallelStream().map(scoreStrategy::score).collect(Collectors.toList());
-            int minIndex = IntStream.range(0,scores.size()).reduce((x, y) -> scores.get(x) > scores.get(y) ? y : x).getAsInt();
-            minScore = scores.get(minIndex);
-            successors = successorSets.get(minIndex);
-            currentSolution = neighbors.get(minIndex);
+            Solution newSolution = neighbors.stream().reduce((sol1, sol2) -> scoreStrategy.score(sol1) > scoreStrategy.score(sol2) ? sol2 : sol1).get();
 
-            System.out.println("Score:" + minScore + ", Treewidth:" + treeWidth(successors) + ", Minindex:"+minIndex);
+            currentSolution = newSolution;
+
+//            System.out.println("Score:" + scoreStrategy.score(currentSolution) + ", Treewidth:" + treeWidth(currentSolution.successors));
 
             i++;
         }

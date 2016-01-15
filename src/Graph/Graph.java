@@ -23,17 +23,8 @@ public class Graph {
         adjacencyList.get(w).add(v);
     }
 
-    public void unsetMasks(){
-        for(Vertex v: vertices.values()){
-            v.setMask(false);
-        }
-    }
-
     public Set<Vertex> neighborhood(Vertex v){
-        Set<Vertex> adjacent = adjacencyList.get(v);
-        adjacent = adjacent.stream().filter(w -> !w.mask).collect(Collectors.toSet());
-
-        return adjacent;
+        return  adjacencyList.get(v);
     }
 
     public void makeClique(Set<Vertex> subgraph){

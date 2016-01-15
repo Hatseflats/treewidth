@@ -41,11 +41,11 @@ def local_search(g):
 def neighborhood(ordering, successors):
 	neighbors = []
 
-	for v in ordering:
-		idx = ordering.index(v)
+	for vertex in ordering:
+		idx = ordering.index(vertex)
 
-		max_pred = max_predecessor(ordering, v, successors)
-		min_succ = min_successor(ordering, v, successors)
+		max_pred = max_predecessor(ordering, vertex, successors)
+		min_succ = min_successor(ordering, vertex, successors)
 		
 		if max_pred is not None:
 			neighbor1 = list(ordering)
@@ -61,17 +61,17 @@ def neighborhood(ordering, successors):
 
 	return neighbors
 
-def min_successor(ordering, v, succ):
-	index = ordering.index(v)
-	candidates = ordering[v:]
+def min_successor(ordering, vertex, succ):
+	index = ordering.index(vertex)
+	candidates = ordering[vertex:]
 	candidates = [w for w in candidates if w in succ]	
 	try:
 		return (ordering.index(candidates[0]))
 	except IndexError:
 		return None
 
-def max_predecessor(ordering, v, successors):
-	predecessors = [w for (w,succ) in successors.items() if v in succ]
+def max_predecessor(ordering, vertex, successors):
+	predecessors = [w for (w,succ) in successors.items() if vertex in succ]
 	positions = map(lambda s: ordering.index(s), predecessors)
 	try:
 		return max(positions)
@@ -100,8 +100,8 @@ def read(path):
 	m = [[0 for _ in range(n)] for _ in range(n)]
 	a = np.matrix(m)
 
-	for v in g.vertices():
-		for e in v.all_edges():
+	for vertex in g.vertices():
+		for e in vertex.all_edges():
 			s = int(e.source())
 			t = int(e.target())
 			a[s,t] = 1
@@ -122,13 +122,13 @@ def triangulate(g, ordering):
 
 	h = np.matrix(g, copy=True)
 
-	for v in ordering:
-		n = np.nonzero(h[v,:])[1]
+	for vertex in ordering:
+		n = np.nonzero(h[vertex,:])[1]
 		n = [w for w in n.tolist()[0] if w not in deleted]
-		successors[v] = n
+		successors[vertex] = n
 
 		make_clique(h,n)
-		deleted.add(v)
+		deleted.add(vertex)
 
 	return successors
 

@@ -2,15 +2,9 @@ package Graph;
 
 public class Vertex {
     public int id;
-    public boolean mask;
 
     public Vertex(int id){
         this.id = id;
-        this.mask = false;
-    }
-
-    public void setMask(boolean mask){
-        this.mask = mask;
     }
 
     @Override

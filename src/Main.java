@@ -1,44 +1,93 @@
+import Commonalities.CommonalitiesMiner;
+import Commonalities.Commonality;
 import FrequentPathMiner.Tree;
 import Graph.Graph;
 import Graph.GraphReader;
 import Graph.Vertex;
 
 import LocalSearch.LocalSearch;
+import LocalSearch.ScoreStrategy.FrequentPathScore;
 import LocalSearch.ScoreStrategy.NormalScore;
 import LocalSearch.ScoreStrategy.ScoreStrategy;
 import LocalSearch.Solution;
 import LocalSearch.SimulatedAnnealing;
+import LocalSearch.TabuSearch;
 
 import FrequentPathMiner.FrequentPathMiner;
 import FrequentPathMiner.Path;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         GraphReader gr = new GraphReader("myciel3.col");
         Graph g = gr.read();
         Solution initialSolution = new Solution(g.maxMinDegree());
-        Random random = new Random(545445545);
+        Random random = new Random(12344679);
         ScoreStrategy score = new NormalScore();
 
-        ArrayList<ArrayList<Vertex>> solutions = new ArrayList<>();
+        ArrayList<Solution> solutions = runSimulatedAnnealing(g, score, random, initialSolution);
 
-        for(int i=0; i<10; i++) {
-            LocalSearch LS = new SimulatedAnnealing(score, 100, 0.99, random);
+        CommonalitiesMiner commonalitiesMiner = new CommonalitiesMiner(solutions, 5);
+
+        HashMap<Vertex, ArrayList<Commonality>> commonalities = commonalitiesMiner.mine();
+
+
+        System.out.println(commonalities.get(g.vertices.get(2)));
+
+
+
+    }
+
+    public static ArrayList<Solution> runSimulatedAnnealing(Graph g, ScoreStrategy score, Random random, Solution initialSolution) {
+        ArrayList<Solution> solutions = new ArrayList<>();
+
+        for (int i = 0; i < 20; i++) {
+            LocalSearch LS = new SimulatedAnnealing(score, 2000, 0.99, random, 2000);
             Solution s = LS.run(g, initialSolution);
 
-            HashMap<Vertex, Set<Vertex>> currentSuccessors = LS.triangulate(s, g.copy());
-            System.out.println(LS.treeWidth(currentSuccessors) + " - " + s.ordering);
+            System.out.println(LS.treeWidth(s.successors) + " - " + s.ordering);
 
-            solutions.add(s.ordering);
+            solutions.add(s);
         }
 
-        FrequentPathMiner freq = new FrequentPathMiner(solutions, g.adjacencyList, 2);
+        return solutions;
+    }
+
+
+
+    public static void freqPathMining(){
+        GraphReader gr = new GraphReader("myciel5.col");
+        Graph g = gr.read();
+        Solution initialSolution = new Solution(g.maxMinDegree());
+        Random random = new Random(12344679);
+        ScoreStrategy score = new NormalScore();
+
+        List<ArrayList<Vertex>> solutions = runSimulatedAnnealing(g, score, random, initialSolution).stream().map(s -> s.ordering).collect(Collectors.toList());
+
+        FrequentPathMiner freq = new FrequentPathMiner(solutions, g.adjacencyList, 25);
         Tree tree = freq.frequentPathTree();
-        for(Path p:tree.getPaths()){
-            System.out.println(p);
-        }
 
+
+        Random random1 = new Random(195315545);
+
+        ArrayList<Path> paths = tree.getPaths();
+        ScoreStrategy path = new FrequentPathScore(paths);
+        TabuSearch pathTabuSearch = new TabuSearch(path, 50);
+        Solution sol1 = pathTabuSearch.run(g, new Solution(g.maxMinDegree()));
+
+        HashMap<Vertex, Set<Vertex>> successors1 = pathTabuSearch.triangulate(sol1, g.copy());
+        System.out.println(sol1.ordering);
+        System.out.println(pathTabuSearch.treeWidth(successors1) + " - " + pathTabuSearch.scoreStrategy.score(sol1));
+
+        Random random2 = new Random(195315545);
+
+        TabuSearch standardTabuSearch = new TabuSearch(score, 50);
+        Solution sol2 = standardTabuSearch.run(g, new Solution(g.maxMinDegree()));
+
+        HashMap<Vertex, Set<Vertex>> successors2 = standardTabuSearch.triangulate(sol2, g.copy());
+        System.out.println(sol2.ordering);
+        System.out.println(standardTabuSearch.treeWidth(successors2) + " - " + standardTabuSearch.scoreStrategy.score(sol2));
     }
 }
