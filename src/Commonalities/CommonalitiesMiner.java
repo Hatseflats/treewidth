@@ -5,6 +5,8 @@ import LocalSearch.Solution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommonalitiesMiner {
     public ArrayList<Solution> db;
@@ -19,6 +21,10 @@ public class CommonalitiesMiner {
         HashMap<Vertex, ArrayList<Commonality>> commonalities = new HashMap<>();
 
         db.get(0).ordering.forEach(v -> commonalities.put(v, updateVertex(v)));
+        commonalities.forEach((vertex, commonalitiesList) -> {
+            ArrayList<Commonality> filtered = commonalitiesList.stream().filter(commonality -> commonality.getSupport() >= minSupport).collect(Collectors.toCollection(ArrayList::new));
+            commonalities.replace(vertex, filtered);
+        });
 
         return commonalities;
     }
@@ -30,12 +36,17 @@ public class CommonalitiesMiner {
             int maxPredIndex = solution.maxPredecessor(v);
             int minSuccIndex = solution.minSuccessor(v);
 
-            if(maxPredIndex == -1 || minSuccIndex == -1){
-                continue;
+            Vertex maxPredecessor = new Vertex(-1);
+
+            if(maxPredIndex != -1){
+                maxPredecessor = solution.ordering.get(maxPredIndex);
             }
 
-            Vertex maxPredecessor = solution.ordering.get(maxPredIndex);
-            Vertex minSuccessor = solution.ordering.get(minSuccIndex);
+            Vertex minSuccessor = new Vertex(-1);
+
+            if(minSuccIndex != -1){
+                minSuccessor = solution.ordering.get(minSuccIndex);
+            }
 
             Commonality commonality = new Commonality(v, maxPredecessor, minSuccessor);
 

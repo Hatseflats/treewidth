@@ -6,6 +6,7 @@ import Graph.GraphReader;
 import Graph.Vertex;
 
 import LocalSearch.LocalSearch;
+import LocalSearch.ScoreStrategy.CommonalityScore;
 import LocalSearch.ScoreStrategy.FrequentPathScore;
 import LocalSearch.ScoreStrategy.NormalScore;
 import LocalSearch.ScoreStrategy.ScoreStrategy;
@@ -21,10 +22,10 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        GraphReader gr = new GraphReader("myciel3.col");
+        GraphReader gr = new GraphReader("queen6_6.col");
         Graph g = gr.read();
         Solution initialSolution = new Solution(g.maxMinDegree());
-        Random random = new Random(12344679);
+        Random random = new Random(1234443679);
         ScoreStrategy score = new NormalScore();
 
         ArrayList<Solution> solutions = runSimulatedAnnealing(g, score, random, initialSolution);
@@ -33,8 +34,27 @@ public class Main {
 
         HashMap<Vertex, ArrayList<Commonality>> commonalities = commonalitiesMiner.mine();
 
+        System.out.println(commonalities);
 
-        System.out.println(commonalities.get(g.vertices.get(2)));
+        ScoreStrategy commonalityScore = new CommonalityScore(commonalities);
+
+        Random random1 = new Random(194315545);
+
+        SimulatedAnnealing pathTabuSearch = new SimulatedAnnealing(commonalityScore, 2000, 0.99, random1, 2000);
+        Solution sol1 = pathTabuSearch.run(g, new Solution(g.maxMinDegree()));
+
+        HashMap<Vertex, Set<Vertex>> successors1 = pathTabuSearch.triangulate(sol1, g.copy());
+        System.out.println(sol1.ordering);
+        System.out.println(pathTabuSearch.treeWidth(successors1) + " - " + pathTabuSearch.scoreStrategy.score(sol1));
+
+        Random random2 = new Random(194315545);
+
+        SimulatedAnnealing standardTabuSearch = new SimulatedAnnealing(score, 2000, 0.99, random2, 2000);
+        Solution sol2 = standardTabuSearch.run(g, new Solution(g.maxMinDegree()));
+
+        HashMap<Vertex, Set<Vertex>> successors2 = standardTabuSearch.triangulate(sol2, g.copy());
+        System.out.println(sol2.ordering);
+        System.out.println(standardTabuSearch.treeWidth(successors2) + " - " + standardTabuSearch.scoreStrategy.score(sol2));
 
 
 
@@ -43,7 +63,7 @@ public class Main {
     public static ArrayList<Solution> runSimulatedAnnealing(Graph g, ScoreStrategy score, Random random, Solution initialSolution) {
         ArrayList<Solution> solutions = new ArrayList<>();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             LocalSearch LS = new SimulatedAnnealing(score, 2000, 0.99, random, 2000);
             Solution s = LS.run(g, initialSolution);
 
