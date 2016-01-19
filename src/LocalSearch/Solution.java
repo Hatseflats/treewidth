@@ -25,6 +25,7 @@ public class Solution {
     public Solution copy(){
         Solution s = new Solution();
         s.ordering.addAll(ordering);
+        s.successors = successors;
         return s;
     }
 

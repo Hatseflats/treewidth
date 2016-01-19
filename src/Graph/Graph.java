@@ -67,7 +67,7 @@ public class Graph {
 
         while(buckets.size() != 0){
             int minDegree = Collections.min(buckets.keySet());
-            Vertex v = buckets.get(minDegree).remove(buckets.get(minDegree).size()-1);
+            Vertex v = buckets.get(minDegree).remove(0);
             degree.replace(v,0);
             Set<Vertex> neighbors = neighborhood(v);
 
