@@ -1,7 +1,8 @@
 package MetaHeuristics.GeneticAlgorithms.Crossover;
 
-/**
- * Created by sebastiaan on 20-1-16.
- */
+import MetaHeuristics.Solution;
+import Util.Tuple.Pair;
+
 public interface Crossover {
+    public Pair<Solution,Solution> crossover(Solution s1, Solution s2);
 }
