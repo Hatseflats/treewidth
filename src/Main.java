@@ -1,18 +1,17 @@
-import Commonalities.CommonalitiesMiner;
-import Commonalities.Commonality;
 import FrequentPathMiner.Tree;
 import Graph.Graph;
 import Graph.GraphReader;
 import Graph.Vertex;
 
-import LocalSearch.LocalSearch;
-import LocalSearch.ScoreStrategy.CommonalityScore;
-import LocalSearch.ScoreStrategy.FrequentPathScore;
-import LocalSearch.ScoreStrategy.NormalScore;
-import LocalSearch.ScoreStrategy.ScoreStrategy;
-import LocalSearch.Solution;
-import LocalSearch.SimulatedAnnealing;
-import LocalSearch.TabuSearch;
+import MetaHeuristics.MetaHeuristic;
+import MetaHeuristics.GeneticAlgorithms.Mutation.InsertionMutation;
+import MetaHeuristics.GeneticAlgorithms.Mutation.Mutation;
+import MetaHeuristics.ScoreStrategy.FrequentPathScore;
+import MetaHeuristics.ScoreStrategy.NormalScore;
+import MetaHeuristics.ScoreStrategy.ScoreStrategy;
+import MetaHeuristics.Solution;
+import MetaHeuristics.MetaHeuristic.SimulatedAnnealing;
+import MetaHeuristics.MetaHeuristic.TabuSearch;
 
 import FrequentPathMiner.FrequentPathMiner;
 import FrequentPathMiner.Path;
@@ -22,33 +21,38 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        GraphReader gr = new GraphReader("queen7_7.col");
+        GraphReader gr = new GraphReader("myciel3.col");
         Graph g = gr.read();
         Solution initialSolution = new Solution(g.maxMinDegree());
+        System.out.println(initialSolution.ordering);
         Random random = new Random(1234443679);
         ScoreStrategy score = new NormalScore();
+        Mutation insertionMutation = new InsertionMutation();
+        insertionMutation.mutate(initialSolution, random);
+        System.out.println(initialSolution.ordering);
 
-        ArrayList<Solution> solutions = runSimulatedAnnealing(g, score, random, initialSolution);
 
-        CommonalitiesMiner commonalitiesMiner = new CommonalitiesMiner(solutions, 3);
-
-        HashMap<Vertex, ArrayList<Commonality>> commonalities = commonalitiesMiner.mine();
-
-        System.out.println(commonalities);
-
-        ScoreStrategy commonalityScore = new CommonalityScore(commonalities);
-
-        Random random1 = new Random(194315545);
-
-        TabuSearch commonalityTabuSearch = new TabuSearch(commonalityScore, 51, random1);
-        Solution sol1 = commonalityTabuSearch.run(g, new Solution(g.maxMinDegree()));
-        System.out.println(commonalityTabuSearch.treeWidth(sol1.successors) + " - " + commonalityTabuSearch.scoreStrategy.score(sol1));
-
-        Random random2 = new Random(194315545);
-
-        TabuSearch standardTabuSearch = new TabuSearch(score, 51, random2);
-        Solution sol2 = standardTabuSearch.run(g, new Solution(g.maxMinDegree()));
-        System.out.println(standardTabuSearch.treeWidth(sol2.successors) + " - " + standardTabuSearch.scoreStrategy.score(sol2));
+//        ArrayList<Solution> solutions = runSimulatedAnnealing(g, score, random, initialSolution);
+//
+//        CommonalitiesMiner commonalitiesMiner = new CommonalitiesMiner(solutions, 3);
+//
+//        HashMap<Vertex, ArrayList<Commonality>> commonalities = commonalitiesMiner.mine();
+//
+//        System.out.println(commonalities);
+//
+//        ScoreStrategy commonalityScore = new CommonalityScore(commonalities);
+//
+//        Random random1 = new Random(194315545);
+//
+//        TabuSearch commonalityTabuSearch = new TabuSearch(commonalityScore, 51, random1);
+//        Solution sol1 = commonalityTabuSearch.run(g, new Solution(g.maxMinDegree()));
+//        System.out.println(commonalityTabuSearch.treeWidth(sol1.successors) + " - " + commonalityTabuSearch.scoreStrategy.score(sol1));
+//
+//        Random random2 = new Random(194315545);
+//
+//        TabuSearch standardTabuSearch = new TabuSearch(score, 51, random2);
+//        Solution sol2 = standardTabuSearch.run(g, new Solution(g.maxMinDegree()));
+//        System.out.println(standardTabuSearch.treeWidth(sol2.successors) + " - " + standardTabuSearch.scoreStrategy.score(sol2));
 
 
 
@@ -58,10 +62,10 @@ public class Main {
         ArrayList<Solution> solutions = new ArrayList<>();
 
         for (int i = 0; i < 50; i++) {
-            LocalSearch LS = new SimulatedAnnealing(score, 100, 0.99, random, 400);
-            Solution s = LS.run(g, initialSolution);
+            MetaHeuristic LS = new SimulatedAnnealing(score, 100, 0.99, random, 400);
+            Solution s = LS.run(g);
 
-            System.out.println(LS.treeWidth(s.successors) + " - " + s.ordering);
+            System.out.println(LS.treeWidth(s) + " - " + s.ordering);
 
             solutions.add(s);
         }
@@ -89,19 +93,17 @@ public class Main {
         ArrayList<Path> paths = tree.getPaths();
         ScoreStrategy path = new FrequentPathScore(paths);
         TabuSearch pathTabuSearch = new TabuSearch(path, 50, random1);
-        Solution sol1 = pathTabuSearch.run(g, new Solution(g.maxMinDegree()));
+        Solution sol1 = pathTabuSearch.run(g);
 
-        HashMap<Vertex, Set<Vertex>> successors1 = pathTabuSearch.triangulate(sol1, g.copy());
         System.out.println(sol1.ordering);
-        System.out.println(pathTabuSearch.treeWidth(successors1) + " - " + pathTabuSearch.scoreStrategy.score(sol1));
+        System.out.println(pathTabuSearch.treeWidth(sol1) + " - " + pathTabuSearch.scoreStrategy.score(sol1));
 
         Random random2 = new Random(195315545);
 
         TabuSearch standardTabuSearch = new TabuSearch(score, 50, random2);
-        Solution sol2 = standardTabuSearch.run(g, new Solution(g.maxMinDegree()));
+        Solution sol2 = standardTabuSearch.run(g);
 
-        HashMap<Vertex, Set<Vertex>> successors2 = standardTabuSearch.triangulate(sol2, g.copy());
         System.out.println(sol2.ordering);
-        System.out.println(standardTabuSearch.treeWidth(successors2) + " - " + standardTabuSearch.scoreStrategy.score(sol2));
+        System.out.println(standardTabuSearch.treeWidth(sol2) + " - " + standardTabuSearch.scoreStrategy.score(sol2));
     }
 }

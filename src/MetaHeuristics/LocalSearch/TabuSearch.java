@@ -1,14 +1,14 @@
-package LocalSearch;
+package MetaHeuristics.LocalSearch;
 
 import Graph.Graph;
 import Graph.Vertex;
-import LocalSearch.ScoreStrategy.ScoreStrategy;
+import MetaHeuristics.MetaHeuristic;
+import MetaHeuristics.ScoreStrategy.ScoreStrategy;
+import MetaHeuristics.Solution;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class TabuSearch extends LocalSearch {
+public class TabuSearch extends MetaHeuristic {
     public int tabuSize;
     public Random random;
 
@@ -18,13 +18,13 @@ public class TabuSearch extends LocalSearch {
         this.random = random;
     }
 
-    public Solution run(Graph g, Solution initialSolution){
+    public Solution run(Graph g){
         int i = 0;
         int a = 400;
 
         LinkedList<Solution> tabuList = new LinkedList<>();
 
-        Solution currentSolution = initialSolution;
+        Solution currentSolution =  new Solution(g.maxMinDegree());;
         Solution bestSolution = currentSolution.copy();
         int bestScore = Integer.MAX_VALUE;
         currentSolution.successors = triangulate(currentSolution, g.copy());
@@ -64,6 +64,33 @@ public class TabuSearch extends LocalSearch {
         }
 
         return bestSolution;
+    }
+
+    public ArrayList<Solution> neighborhood(Solution s){
+        ArrayList<Solution> neighbors = new ArrayList<>();
+        int currentIndex = 0;
+
+        for(Vertex v : s.ordering){
+            int maxPred = s.maxPredecessor(v);
+            int minSucc = s.minSuccessor(v);
+
+            if(maxPred != -1){
+                Solution s1 = s.copy();
+                s1.swap(currentIndex, maxPred);
+                if(!neighbors.contains(s1)){
+                    neighbors.add(s1);
+                }
+            }
+            if(minSucc != -1){
+                Solution s2 = s.copy();
+                s2.swap(currentIndex, minSucc);
+                if(!neighbors.contains(s2)){
+                    neighbors.add(s2);
+                }
+            }
+            currentIndex = currentIndex + 1;
+        }
+        return neighbors;
     }
 
     public void diversification(Solution solution){

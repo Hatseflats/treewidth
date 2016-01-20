@@ -1,6 +1,5 @@
-package LocalSearch;
+package MetaHeuristics;
 
-import Graph.Graph;
 import Graph.Vertex;
 
 import java.util.ArrayList;

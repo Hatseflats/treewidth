@@ -1,12 +1,14 @@
-package LocalSearch;
+package MetaHeuristics.LocalSearch;
 
 import Graph.Graph;
 import Graph.Vertex;
-import LocalSearch.ScoreStrategy.ScoreStrategy;
+import MetaHeuristics.MetaHeuristic;
+import MetaHeuristics.ScoreStrategy.ScoreStrategy;
+import MetaHeuristics.Solution;
 
 import java.util.*;
 
-public class SimulatedAnnealing extends LocalSearch {
+public class SimulatedAnnealing extends MetaHeuristic {
 
     public double T;
     public double alpha;
@@ -21,8 +23,8 @@ public class SimulatedAnnealing extends LocalSearch {
         this.nonImprovingIterations = nonImprovingIterations;
     }
 
-    public Solution run(Graph g, Solution initialSolution) {
-        Solution currentSolution = initialSolution;
+    public Solution run(Graph g) {
+        Solution currentSolution =  new Solution(g.maxMinDegree());;
         Solution bestSolution = currentSolution.copy();
         int bestScore = Integer.MAX_VALUE;
         int lastImprovement = 0;
@@ -58,6 +60,33 @@ public class SimulatedAnnealing extends LocalSearch {
         }
 
         return bestSolution;
+    }
+
+    public ArrayList<Solution> neighborhood(Solution s){
+        ArrayList<Solution> neighbors = new ArrayList<>();
+        int currentIndex = 0;
+
+        for(Vertex v : s.ordering){
+            int maxPred = s.maxPredecessor(v);
+            int minSucc = s.minSuccessor(v);
+
+            if(maxPred != -1){
+                Solution s1 = s.copy();
+                s1.swap(currentIndex, maxPred);
+                if(!neighbors.contains(s1)){
+                    neighbors.add(s1);
+                }
+            }
+            if(minSucc != -1){
+                Solution s2 = s.copy();
+                s2.swap(currentIndex, minSucc);
+                if(!neighbors.contains(s2)){
+                    neighbors.add(s2);
+                }
+            }
+            currentIndex = currentIndex + 1;
+        }
+        return neighbors;
     }
 
     private boolean acceptDeterioration(int currentScore, int neighborScore){

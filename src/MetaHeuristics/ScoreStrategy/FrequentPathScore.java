@@ -1,8 +1,8 @@
-package LocalSearch.ScoreStrategy;
+package MetaHeuristics.ScoreStrategy;
 
 import FrequentPathMiner.Path;
 import Graph.Vertex;
-import LocalSearch.Solution;
+import MetaHeuristics.Solution;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,12 +1,9 @@
-package LocalSearch.ScoreStrategy;
+package MetaHeuristics.ScoreStrategy;
 
-import Graph.Vertex;
-import LocalSearch.Solution;
+import MetaHeuristics.Solution;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class NormalScore implements ScoreStrategy {

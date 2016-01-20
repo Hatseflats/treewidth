@@ -1,11 +1,10 @@
 package Commonalities;
 
 import Graph.Vertex;
-import LocalSearch.Solution;
+import MetaHeuristics.Solution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommonalitiesMiner {

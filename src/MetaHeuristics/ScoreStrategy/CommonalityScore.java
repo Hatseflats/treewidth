@@ -1,8 +1,8 @@
-package LocalSearch.ScoreStrategy;
+package MetaHeuristics.ScoreStrategy;
 
 import Commonalities.Commonality;
 import Graph.Vertex;
-import LocalSearch.Solution;
+import MetaHeuristics.Solution;
 
 import java.util.ArrayList;
 import java.util.Collections;
