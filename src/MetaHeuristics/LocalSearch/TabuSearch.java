@@ -48,9 +48,10 @@ public class TabuSearch extends MetaHeuristic {
 
             neighbors.parallelStream().forEach(sol -> {
                 sol.successors =  triangulate(sol,g.copy());
+                sol.score = scoreStrategy.score(sol);
             });
 
-            Solution newSolution = neighbors.stream().reduce((sol1, sol2) -> scoreStrategy.score(sol1) > scoreStrategy.score(sol2) ? sol2 : sol1).get();
+            Solution newSolution = neighbors.stream().reduce((sol1, sol2) -> sol1.score > sol2.score ? sol2 : sol1).get();
 
             if(scoreStrategy.score(newSolution) >= scoreStrategy.score(currentSolution)){
                 diversification(currentSolution);

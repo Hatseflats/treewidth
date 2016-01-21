@@ -11,10 +11,12 @@ import java.util.stream.Collectors;
 public class Solution {
     public ArrayList<Vertex> ordering;
     public HashMap<Vertex, Set<Vertex>> successors;
+    public int score;
 
     public Solution(){
         ordering = new ArrayList<>();
         successors = new HashMap<>();
+        score = Integer.MAX_VALUE;
     }
 
     public Solution(ArrayList<Vertex> ordering){

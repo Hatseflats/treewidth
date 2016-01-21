@@ -13,8 +13,11 @@ public class GeneticAlgorithm extends MetaHeuristic {
     public Crossover crossover;
     public Selection selection;
 
-    public GeneticAlgorithm(ScoreStrategy score){
-        super(score);
+    public GeneticAlgorithm(ScoreStrategy scoreStrategy, Mutation mutation, Crossover crossover, Selection selection) {
+        super(scoreStrategy);
+        this.mutation = mutation;
+        this.crossover = crossover;
+        this.selection = selection;
     }
 
     public Solution run(Graph g){

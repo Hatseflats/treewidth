@@ -3,7 +3,8 @@ package MetaHeuristics.GeneticAlgorithms.Selection;
 import MetaHeuristics.Solution;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface Selection {
-    Collection<Solution> selection(Collection<Solution> solutions);
+    List<Solution> selection(List<Solution> solutions);
 }

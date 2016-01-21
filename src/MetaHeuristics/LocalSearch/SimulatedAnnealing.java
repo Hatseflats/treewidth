@@ -47,9 +47,9 @@ public class SimulatedAnnealing extends MetaHeuristic {
 
             for(Solution neighbor: neighbors){
                 neighbor.successors = triangulate(neighbor, g.copy());
-                int neighborScore = scoreStrategy.score(neighbor);
+                neighbor.score = scoreStrategy.score(neighbor);
 
-                if(neighborScore < currentScore || acceptDeterioration(currentScore, neighborScore)){
+                if(neighbor.score < currentScore || acceptDeterioration(currentScore, neighbor.score)){
                     currentSolution = neighbor;
                     break;
                 }
