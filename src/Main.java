@@ -3,6 +3,7 @@ import Graph.Graph;
 import Graph.GraphReader;
 import Graph.Vertex;
 
+import MetaHeuristics.GeneticAlgorithms.Crossover.PositionCrossover;
 import MetaHeuristics.MetaHeuristic;
 import MetaHeuristics.GeneticAlgorithms.Mutation.InsertionMutation;
 import MetaHeuristics.GeneticAlgorithms.Mutation.Mutation;
@@ -10,11 +11,12 @@ import MetaHeuristics.ScoreStrategy.FrequentPathScore;
 import MetaHeuristics.ScoreStrategy.NormalScore;
 import MetaHeuristics.ScoreStrategy.ScoreStrategy;
 import MetaHeuristics.Solution;
-import MetaHeuristics.MetaHeuristic.SimulatedAnnealing;
-import MetaHeuristics.MetaHeuristic.TabuSearch;
+import MetaHeuristics.LocalSearch.SimulatedAnnealing;
+import MetaHeuristics.LocalSearch.TabuSearch;
 
 import FrequentPathMiner.FrequentPathMiner;
 import FrequentPathMiner.Path;
+import Util.Tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,13 +25,31 @@ public class Main {
     public static void main(String[] args) {
         GraphReader gr = new GraphReader("myciel3.col");
         Graph g = gr.read();
-        Solution initialSolution = new Solution(g.maxMinDegree());
-        System.out.println(initialSolution.ordering);
+
         Random random = new Random(1234443679);
-        ScoreStrategy score = new NormalScore();
-        Mutation insertionMutation = new InsertionMutation();
-        insertionMutation.mutate(initialSolution, random);
-        System.out.println(initialSolution.ordering);
+
+        PositionCrossover pos = new PositionCrossover(random);
+
+        Solution s1 = new Solution(g.maxMinDegree());
+        Solution s2 = new Solution(new ArrayList<>(g.vertices.values()));
+
+        System.out.println(s1.ordering);
+        System.out.println(s2.ordering);
+
+        Pair<Solution,Solution> offspring = pos.crossover(s1,s2);
+
+        System.out.println(offspring.fst().ordering);
+        System.out.println(offspring.snd().ordering);
+
+
+
+
+//        Solution initialSolution = new Solution(g.maxMinDegree());
+//        System.out.println(initialSolution.ordering);
+//        ScoreStrategy score = new NormalScore();
+//        Mutation insertionMutation = new InsertionMutation();
+//        insertionMutation.mutate(initialSolution, random);
+//        System.out.println(initialSolution.ordering);
 
 
 //        ArrayList<Solution> solutions = runSimulatedAnnealing(g, score, random, initialSolution);

@@ -39,6 +39,15 @@ public class Solution {
         Solution s = (Solution) obj;
         return s.ordering.equals(ordering);
     }
+
+    @Override
+    public String toString() {
+        return "Solution{" +
+                "score=" + score +
+                ", ordering=" + ordering +
+                '}';
+    }
+
     public int maxPredecessor(Vertex v){
         Set<Vertex> keys = successors.keySet();
         Set<Vertex> candidates = keys.stream().filter(k -> successors.get(k).contains(v)).collect(Collectors.toSet());
