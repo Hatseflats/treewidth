@@ -24,7 +24,7 @@ public class Graph {
     }
 
     public Set<Vertex> neighborhood(Vertex v){
-        return new HashSet<>(adjacencyList.get(v));
+        return adjacencyList.get(v);
     }
 
     public void makeClique(Set<Vertex> subgraph){

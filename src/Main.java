@@ -27,19 +27,24 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        GraphReader gr = new GraphReader("myciel5.col");
+        GraphReader gr = new GraphReader("myciel7.col");
         Graph g = gr.read();
 
-        Random random = new Random();
+        Random random = new Random(212121252);
 
-        Crossover positionCrossover = new PositionCrossover(random, 0.00);
-        Mutation insertionMutation = new InsertionMutation(random, 1.00);
-        Selection tournamentSelection = new TournamentSelection(random, 2);
+        Crossover positionCrossover = new PositionCrossover(random, 1.00);
+        Mutation insertionMutation = new InsertionMutation(random, 0.30);
+        Selection tournamentSelection = new TournamentSelection(random, 3);
         ScoreStrategy normalScore = new NormalScore();
-        GeneticAlgorithm GA = new GeneticAlgorithm(normalScore,insertionMutation,tournamentSelection,positionCrossover,5,20, random);
+        GeneticAlgorithm GA = new GeneticAlgorithm(normalScore,insertionMutation,tournamentSelection,positionCrossover,10,10, random);
 
+        long startTime = System.nanoTime();
         Solution s = GA.run(g);
+        long endTime = System.nanoTime();
 
+        double duration = (endTime - startTime) / 1000000000.0;
+
+        System.out.println(duration);
     }
 
     public static ArrayList<Solution> runSimulatedAnnealing(Graph g, ScoreStrategy score, Random random) {
