@@ -12,8 +12,13 @@ public class InsertionMutation extends Mutation{
     }
 
     public void operator(Solution s) {
-        int oldIndex = random.nextInt(s.ordering.size());
-        int newIndex = random.nextInt(s.ordering.size());
-        Collections.rotate(s.ordering.subList(oldIndex,newIndex+1), -1);
+        int index1 = random.nextInt(s.ordering.size());
+        int index2 = random.nextInt(s.ordering.size());
+
+        if(index1 < index2){
+            Collections.rotate(s.ordering.subList(index1,index2+1), -1);
+        } else if(index2 < index1){
+            Collections.rotate(s.ordering.subList(index2,index1+1), -1);
+        }
     }
 }

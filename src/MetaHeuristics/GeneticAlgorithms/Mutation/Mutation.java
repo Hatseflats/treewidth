@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-abstract class Mutation {
+public abstract class Mutation {
     protected Random random;
     protected double mutationRate;
 
@@ -20,9 +20,6 @@ abstract class Mutation {
     abstract void operator(Solution s);
 
     public void mutate(List<Solution> population){
-        List<Solution> mutatedPopulation = new ArrayList<>();
-        Iterator<Solution> populationIterator = population.iterator();
-
         for(Solution solution:population) {
             if (performMutation()) {
                 operator(solution);

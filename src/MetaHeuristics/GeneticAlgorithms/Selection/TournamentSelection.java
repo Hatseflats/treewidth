@@ -9,12 +9,25 @@ public class TournamentSelection implements Selection {
     public int tournamentSize;
     public Random random;
 
-    public TournamentSelection(int tournamentSize, Random random) {
+    public TournamentSelection(Random random, int tournamentSize) {
         this.tournamentSize = tournamentSize;
         this.random = random;
     }
 
     public List<Solution> selection(List<Solution> solutions) {
+        List<Solution> winners = new ArrayList<>();
+        int populationSize = solutions.size();
+
+        while(winners.size() < populationSize){
+            winners.addAll(tournament(solutions));
+        }
+
+        winners.subList(populationSize,winners.size()).clear();
+
+        return winners;
+    }
+
+    public List<Solution> tournament(List<Solution> solutions) {
         List<Solution> results = new ArrayList<>();
         Collections.shuffle(solutions,random);
         Iterator<Solution> iterator = solutions.iterator();
@@ -24,7 +37,7 @@ public class TournamentSelection implements Selection {
             while(iterator.hasNext() && candidates.size() != tournamentSize){
                 candidates.add(iterator.next());
             }
-            Solution winner = Collections.max(candidates, (s1,s2) -> s1.score > s2.score ? 1 : -1);
+            Solution winner = Collections.max(candidates, (s1,s2) -> s1.score > s2.score ? -1 : 1);
             results.add(winner);
         }
 

@@ -24,7 +24,7 @@ public class Graph {
     }
 
     public Set<Vertex> neighborhood(Vertex v){
-        return  adjacencyList.get(v);
+        return new HashSet<>(adjacencyList.get(v));
     }
 
     public void makeClique(Set<Vertex> subgraph){
@@ -50,11 +50,16 @@ public class Graph {
         return h;
     }
 
-    public ArrayList<Vertex> maxMinDegree(){
+    public ArrayList<Vertex> randomOrder(Random random){
+        ArrayList<Vertex> ordering = new ArrayList<>(vertices.values());
+        Collections.shuffle(ordering,random);
+        return ordering;
+    }
+
+    public ArrayList<Vertex> maxMinDegree(Random random){
         ArrayList<Vertex> ordering = new ArrayList<>();
         HashMap<Vertex, Integer> degree = new HashMap<>();
         HashMap<Integer, ArrayList<Vertex>> buckets = new HashMap<>();
-
 
         adjacencyList.forEach((v,n) -> {
             int d = n.size();
@@ -67,7 +72,8 @@ public class Graph {
 
         while(buckets.size() != 0){
             int minDegree = Collections.min(buckets.keySet());
-            Vertex v = buckets.get(minDegree).remove(0);
+            ArrayList<Vertex> bucket = buckets.get(minDegree);
+            Vertex v = bucket.remove(random.nextInt(bucket.size()));
             degree.replace(v,0);
             Set<Vertex> neighbors = neighborhood(v);
 

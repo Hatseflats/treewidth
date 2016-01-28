@@ -24,7 +24,7 @@ public class SimulatedAnnealing extends MetaHeuristic {
     }
 
     public Solution run(Graph g) {
-        Solution currentSolution =  new Solution(g.maxMinDegree());;
+        Solution currentSolution =  new Solution(g.maxMinDegree(random));
         Solution bestSolution = currentSolution.copy();
         int bestScore = Integer.MAX_VALUE;
         int lastImprovement = 0;

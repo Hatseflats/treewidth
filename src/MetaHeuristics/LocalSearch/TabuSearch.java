@@ -24,7 +24,7 @@ public class TabuSearch extends MetaHeuristic {
 
         LinkedList<Solution> tabuList = new LinkedList<>();
 
-        Solution currentSolution =  new Solution(g.maxMinDegree());;
+        Solution currentSolution =  new Solution(g.maxMinDegree(random));
         Solution bestSolution = currentSolution.copy();
         int bestScore = Integer.MAX_VALUE;
         currentSolution.successors = triangulate(currentSolution, g.copy());

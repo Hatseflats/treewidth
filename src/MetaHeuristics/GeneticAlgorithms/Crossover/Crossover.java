@@ -31,6 +31,9 @@ public abstract class Crossover {
                 Pair<Solution,Solution> children = operator(parent1,parent2);
                 offspring.add(children.fst());
                 offspring.add(children.snd());
+            } else {
+                offspring.add(parent1);
+                offspring.add(parent2);
             }
         }
         return offspring;
