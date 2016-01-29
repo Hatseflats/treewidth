@@ -1,7 +1,6 @@
 package MetaHeuristics.ScoreStrategy;
 
 import Commonalities.Commonality;
-import Graph.Vertex;
 import MetaHeuristics.Solution;
 
 import java.util.ArrayList;
@@ -10,14 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by sebastiaan on 15-1-16.
- */
 public class CommonalityScore implements ScoreStrategy {
 
-    public HashMap<Vertex, ArrayList<Commonality>> commonalities;
+    public HashMap<Short, ArrayList<Commonality>> commonalities;
 
-    public CommonalityScore(HashMap<Vertex, ArrayList<Commonality>> commonalities) {
+    public CommonalityScore(HashMap<Short, ArrayList<Commonality>> commonalities) {
         this.commonalities = commonalities;
     }
 
@@ -29,17 +25,17 @@ public class CommonalityScore implements ScoreStrategy {
 
         int score = (n*n)*(w*w)+succ;
 
-        for(Vertex v: solution.ordering){
+        for(Short v: solution.ordering){
             int maxPredIndex = solution.maxPredecessor(v);
             int minSuccIndex = solution.minSuccessor(v);
 
-            Vertex maxPredecessor = new Vertex(-1);
+            Short maxPredecessor = -1;
 
             if(maxPredIndex != -1){
                 maxPredecessor = solution.ordering.get(maxPredIndex);
             }
 
-            Vertex minSuccessor = new Vertex(-1);
+            Short minSuccessor = -1;
 
             if(minSuccIndex != -1){
                 minSuccessor = solution.ordering.get(minSuccIndex);
@@ -49,7 +45,7 @@ public class CommonalityScore implements ScoreStrategy {
             ArrayList<Commonality> vertexCommonalities = commonalities.get(v);
             if(vertexCommonalities.contains(commonality)){
                 commonality = vertexCommonalities.get(vertexCommonalities.indexOf(commonality));
-                score -= commonality.getSupport() * commonality.getSupport() * commonality.getSupport();
+                score -= 2 * commonality.getSupport() * commonality.getSupport();
             }
         }
 

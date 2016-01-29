@@ -27,7 +27,7 @@ public class TabuSearch extends MetaHeuristic {
         Solution currentSolution =  new Solution(g.maxMinDegree(random));
         Solution bestSolution = currentSolution.copy();
         int bestScore = Integer.MAX_VALUE;
-        currentSolution.successors = triangulate(currentSolution, g.copy());
+//        currentSolution.successors = triangulate(currentSolution, g.copy());
 
 
         while (i < a){
@@ -71,7 +71,7 @@ public class TabuSearch extends MetaHeuristic {
         ArrayList<Solution> neighbors = new ArrayList<>();
         int currentIndex = 0;
 
-        for(Vertex v : s.ordering){
+        for(Short v : s.ordering){
             int maxPred = s.maxPredecessor(v);
             int minSucc = s.minSuccessor(v);
 
@@ -95,10 +95,9 @@ public class TabuSearch extends MetaHeuristic {
     }
 
     public void diversification(Solution solution){
-        Vertex v = solution.successors.entrySet().stream().max((s1, s2) -> s1.getValue().size() > s2.getValue().size() ? 1 : -1).get().getKey();
+        Short v = solution.successors.entrySet().stream().max((s1, s2) -> s1.getValue().size() > s2.getValue().size() ? 1 : -1).get().getKey();
         int index = solution.ordering.indexOf(v);
         int swapIndex = random.nextInt(solution.ordering.size());
-//        System.out.println(swapIndex);
         solution.swap(index, swapIndex);
 
     }

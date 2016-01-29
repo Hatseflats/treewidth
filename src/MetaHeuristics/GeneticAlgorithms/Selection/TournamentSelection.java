@@ -14,33 +14,27 @@ public class TournamentSelection implements Selection {
         this.random = random;
     }
 
-    public List<Solution> selection(List<Solution> solutions) {
+    public List<Solution> selection(List<Solution> population) {
         List<Solution> winners = new ArrayList<>();
-        int populationSize = solutions.size();
+        int populationSize = population.size();
 
-        while(winners.size() < populationSize){
-            winners.addAll(tournament(solutions));
-        }
+        Collections.shuffle(population);
+        Iterator<Solution> iterator = population.iterator();
+        while(winners.size() != populationSize){
+            if(!iterator.hasNext()){
+                Collections.shuffle(population);
+                iterator = population.iterator();
+            }
 
-        winners.subList(populationSize,winners.size()).clear();
-
-        return winners;
-    }
-
-    public List<Solution> tournament(List<Solution> solutions) {
-        List<Solution> results = new ArrayList<>();
-        Collections.shuffle(solutions,random);
-        Iterator<Solution> iterator = solutions.iterator();
-
-        while(iterator.hasNext()){
             Collection<Solution> candidates = new ArrayList<>();
             while(iterator.hasNext() && candidates.size() != tournamentSize){
                 candidates.add(iterator.next());
             }
             Solution winner = Collections.max(candidates, (s1,s2) -> s1.score > s2.score ? -1 : 1);
-            results.add(winner);
+            winners.add(winner);
         }
 
-        return results;
+
+        return winners;
     }
 }

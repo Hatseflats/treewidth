@@ -30,15 +30,14 @@ public class GeneticAlgorithm extends MetaHeuristic {
         this.random = random;
     }
 
-    public Solution run(Graph g){
+    public List<Solution> run(Graph g){
         int generations = 0;
         List<Solution> population = initialPopulation(g);
         evaluatePopulation(population, g);
-
         for(Solution s: population){
-            System.out.println(treeWidth(s) + " - " + s.score + " - " + s.ordering);
+            System.out.print(treeWidth(s) + " ");
         }
-        System.out.println("___--------------__________");
+        System.out.println("-----------");
         while(generations < maxGenerations){
             generations++;
             List<Solution> newPopulation = selection(population);
@@ -50,9 +49,11 @@ public class GeneticAlgorithm extends MetaHeuristic {
         }
 
         for(Solution s: population){
-            System.out.println(treeWidth(s) + " - " + s.score + " - " + s.ordering);
+            System.out.println(treeWidth(s) + " " + s.ordering);
         }
-        return population.get(0);
+        System.out.println("");
+
+        return population;
     }
 
     public List<Solution> initialPopulation(Graph g) {
@@ -67,7 +68,7 @@ public class GeneticAlgorithm extends MetaHeuristic {
     public void evaluatePopulation(List<Solution> population, Graph g){
 
         population.parallelStream().forEach((individual) -> {
-            individual.successors = triangulate(individual,g.copy());
+            individual.successors = triangulate(individual, g.copy());
             individual.score = scoreStrategy.score(individual);
         });
     }

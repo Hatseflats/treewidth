@@ -20,11 +20,12 @@ public abstract class Mutation {
     abstract void operator(Solution s);
 
     public void mutate(List<Solution> population){
-        for(Solution solution:population) {
-            if (performMutation()) {
-                operator(solution);
+        population.parallelStream().forEach(individual -> {
+            if(performMutation()){
+                operator(individual);
             }
-        }
+        });
+
     }
 
 

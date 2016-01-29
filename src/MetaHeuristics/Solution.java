@@ -1,7 +1,5 @@
 package MetaHeuristics;
 
-import Graph.Vertex;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,8 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Solution {
-    public ArrayList<Vertex> ordering;
-    public HashMap<Vertex, Set<Vertex>> successors;
+    public ArrayList<Short> ordering;
+    public HashMap<Short, Set<Short>> successors;
     public int score;
 
     public Solution(){
@@ -19,7 +17,7 @@ public class Solution {
         score = Integer.MAX_VALUE;
     }
 
-    public Solution(ArrayList<Vertex> ordering){
+    public Solution(ArrayList<Short> ordering){
         this.ordering = ordering;
     }
 
@@ -48,9 +46,9 @@ public class Solution {
                 '}';
     }
 
-    public int maxPredecessor(Vertex v){
-        Set<Vertex> keys = successors.keySet();
-        Set<Vertex> candidates = keys.stream().filter(k -> successors.get(k).contains(v)).collect(Collectors.toSet());
+    public int maxPredecessor(Short v){
+        Set<Short> keys = successors.keySet();
+        Set<Short> candidates = keys.stream().filter(k -> successors.get(k).contains(v)).collect(Collectors.toSet());
         if(candidates.isEmpty()){
             return -1;
         } else {
@@ -58,10 +56,10 @@ public class Solution {
         }
     }
 
-    public int minSuccessor(Vertex v){
-        Set<Vertex> succ = successors.get(v);
+    public int minSuccessor(Short v){
+        Set<Short> succ = successors.get(v);
         int index = ordering.indexOf(v);
-        ArrayList<Vertex> candidates = (ArrayList<Vertex>) ordering.subList(index+1,ordering.size()).stream().filter(succ::contains).collect(Collectors.toList());
+        ArrayList<Short> candidates = (ArrayList<Short>) ordering.subList(index+1,ordering.size()).stream().filter(succ::contains).collect(Collectors.toList());
         if(candidates.isEmpty()){
             return -1;
         } else {

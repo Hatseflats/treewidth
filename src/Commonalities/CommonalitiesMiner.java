@@ -1,23 +1,23 @@
 package Commonalities;
 
-import Graph.Vertex;
 import MetaHeuristics.Solution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommonalitiesMiner {
-    public ArrayList<Solution> db;
+    public List<Solution> db;
     public int minSupport;
 
-    public CommonalitiesMiner(ArrayList<Solution> db, int minSupport) {
+    public CommonalitiesMiner(List<Solution> db, int minSupport) {
         this.db = db;
         this.minSupport = minSupport;
     }
 
-    public HashMap<Vertex, ArrayList<Commonality>> mine(){
-        HashMap<Vertex, ArrayList<Commonality>> commonalities = new HashMap<>();
+    public HashMap<Short, ArrayList<Commonality>> mine(){
+        HashMap<Short, ArrayList<Commonality>> commonalities = new HashMap<>();
 
         db.get(0).ordering.forEach(v -> commonalities.put(v, updateVertex(v)));
         commonalities.forEach((vertex, commonalitiesList) -> {
@@ -28,20 +28,20 @@ public class CommonalitiesMiner {
         return commonalities;
     }
 
-    public ArrayList<Commonality> updateVertex(Vertex v){
+    public ArrayList<Commonality> updateVertex(Short v){
         ArrayList<Commonality> vertexCommonalities = new ArrayList<>();
 
         for(Solution solution:db){
             int maxPredIndex = solution.maxPredecessor(v);
             int minSuccIndex = solution.minSuccessor(v);
 
-            Vertex maxPredecessor = new Vertex(-1);
+            Short maxPredecessor = -1;
 
             if(maxPredIndex != -1){
                 maxPredecessor = solution.ordering.get(maxPredIndex);
             }
 
-            Vertex minSuccessor = new Vertex(-1);
+            Short minSuccessor = -1;
 
             if(minSuccIndex != -1){
                 minSuccessor = solution.ordering.get(minSuccIndex);

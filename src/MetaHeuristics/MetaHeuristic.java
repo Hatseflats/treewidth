@@ -1,7 +1,6 @@
 package MetaHeuristics;
 
 import Graph.Graph;
-import Graph.Vertex;
 import MetaHeuristics.ScoreStrategy.ScoreStrategy;
 
 import java.util.*;
@@ -14,14 +13,12 @@ public abstract class MetaHeuristic {
         this.scoreStrategy = scoreStrategy;
     }
 
-    public abstract Solution run(Graph g);
+    public HashMap<Short, Set<Short>> triangulate(Solution s, Graph g) {
+        HashMap<Short, Set<Short>> successors = new HashMap<>();
+        HashSet<Short> masked = new HashSet<>();
 
-    public HashMap<Vertex, Set<Vertex>> triangulate(Solution s, Graph g) {
-        HashMap<Vertex, Set<Vertex>> successors = new HashMap<>();
-        HashSet<Vertex> masked = new HashSet<>();
-
-        for (Vertex v: s.ordering) {
-            Set<Vertex> neighborhood = g.neighborhood(v);
+        for (Short v: s.ordering) {
+            Set<Short> neighborhood = g.neighborhood(v);
             neighborhood.removeAll(masked);
             successors.put(v,neighborhood);
             g.makeClique(neighborhood);

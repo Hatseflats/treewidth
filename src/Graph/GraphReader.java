@@ -21,19 +21,15 @@ public class GraphReader {
         try(Stream<String> lines = Files.lines(filePath).filter(s -> s.startsWith("e"))){
             lines.forEach((s) -> {
                 String[] parts = s.split(" ");
-                Vertex v = new Vertex(Integer.parseInt(parts[1]));
-                Vertex w = new Vertex(Integer.parseInt(parts[2]));
+                Short v = new Short(Short.parseShort(parts[1]));
+                Short w = new Short(Short.parseShort(parts[2]));
 
-                if(!g.vertices.containsKey(v.id)){
+                if(!g.adjacencyList.keySet().contains(v)){
                     g.addVertex(v);
-                } else {
-                    v = g.vertices.get(v.id);
                 }
 
-                if(!g.vertices.containsKey(w.id)){
+                if(!g.adjacencyList.keySet().contains(w)){
                     g.addVertex(w);
-                } else {
-                    w = g.vertices.get(w.id);
                 }
 
                 g.addEdge(v,w);

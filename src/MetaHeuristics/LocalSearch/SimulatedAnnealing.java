@@ -66,7 +66,7 @@ public class SimulatedAnnealing extends MetaHeuristic {
         ArrayList<Solution> neighbors = new ArrayList<>();
         int currentIndex = 0;
 
-        for(Vertex v : s.ordering){
+        for(Short v : s.ordering){
             int maxPred = s.maxPredecessor(v);
             int minSucc = s.minSuccessor(v);
 

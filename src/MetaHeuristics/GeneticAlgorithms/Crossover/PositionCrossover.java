@@ -1,6 +1,5 @@
 package MetaHeuristics.GeneticAlgorithms.Crossover;
 
-import Graph.Vertex;
 import MetaHeuristics.Solution;
 import Util.Tuple.Pair;
 
@@ -15,15 +14,15 @@ public class PositionCrossover extends Crossover {
     public Pair<Solution, Solution> operator(Solution s1, Solution s2) {
         int index = 0;
         int size = s1.ordering.size();
-        Iterator<Vertex> it1 = s1.ordering.iterator();
-        Iterator<Vertex> it2 = s2.ordering.iterator();
+        Iterator<Short> it1 = s1.ordering.iterator();
+        Iterator<Short> it2 = s2.ordering.iterator();
 
-        Vertex[] crossover1 = new Vertex[size];
-        Vertex[] crossover2 = new Vertex[size];
+        Short[] crossover1 = new Short[size];
+        Short[] crossover2 = new Short[size];
 
         while(index != s1.ordering.size()){
-            Vertex v1 = it1.next();
-            Vertex v2 = it2.next();
+            Short v1 = it1.next();
+            Short v2 = it2.next();
 
             if(coinFlip()){
                 crossover1[index] = v2;
@@ -38,16 +37,16 @@ public class PositionCrossover extends Crossover {
         return new Pair<>(offspring1,offspring2);
     }
 
-    private Solution createOffspring(Solution parent, Vertex[] crossover){
-        ArrayList<Vertex> crossoverList = new ArrayList<>(Arrays.asList(crossover));
-        ArrayList<Vertex> missing = new ArrayList<>(parent.ordering);
+    private Solution createOffspring(Solution parent, Short[] crossover){
+        ArrayList<Short> crossoverList = new ArrayList<>(Arrays.asList(crossover));
+        ArrayList<Short> missing = new ArrayList<>(parent.ordering);
         missing.removeAll(crossoverList);
 
-        ArrayList<Vertex> ordering = new ArrayList<>();
-        Iterator<Vertex> missingIterator = missing.iterator();
+        ArrayList<Short> ordering = new ArrayList<>();
+        Iterator<Short> missingIterator = missing.iterator();
 
         for(int index = 0; index<parent.ordering.size(); index++){
-            Vertex v = crossover[index];
+            Short v = crossover[index];
             if(v != null){
                 ordering.add(v);
             } else {

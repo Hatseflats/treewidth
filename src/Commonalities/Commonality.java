@@ -1,35 +1,30 @@
 package Commonalities;
 
-import Graph.Vertex;
-
-/**
- * Created by sebastiaan on 15-1-16.
- */
 public class Commonality {
-    public Vertex vertex;
-    public Vertex successor;
-    public Vertex predecessor;
+    public Short vertex;
+    public Short successor;
+    public Short predecessor;
     public int support;
 
-    public Commonality(Vertex vertex, Vertex predecessor, Vertex successor) {
+    public Commonality(Short vertex, Short predecessor, Short successor) {
         this.vertex = vertex;
         this.predecessor = predecessor;
         this.successor = successor;
     }
 
-    public Vertex getVertex() {
+    public Short getVertex() {
         return vertex;
     }
 
-    public void setVertex(Vertex vertex) {
+    public void setVertex(Short vertex) {
         this.vertex = vertex;
     }
 
-    public Vertex getSuccessor() {
+    public Short getSuccessor() {
         return successor;
     }
 
-    public void setSuccessor(Vertex successor) {
+    public void setSuccessor(Short successor) {
         this.successor = successor;
     }
 
@@ -41,11 +36,11 @@ public class Commonality {
         this.support = support;
     }
 
-    public Vertex getPredecessor() {
+    public Short getPredecessor() {
         return predecessor;
     }
 
-    public void setPredecessor(Vertex predecessor) {
+    public void setPredecessor(Short predecessor) {
         this.predecessor = predecessor;
     }
 
