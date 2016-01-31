@@ -25,13 +25,13 @@ public class Main {
         GraphReader gr = new GraphReader("dsjc125.1.col");
         Graph g = gr.read();
 
-        Random random = new Random(76766776);
+        Random random = new Random(34343443);
 
         Crossover positionCrossover = new PositionCrossover(random, 1.00);
-        Mutation insertionMutation = new InsertionMutation(random, 0.30);
-        Selection tournamentSelection = new TournamentSelection(random, 3);
+        Mutation insertionMutation = new InsertionMutation(random, 0.35);
+        Selection tournamentSelection = new TournamentSelection(random, 2);
         ScoreStrategy normalScore = new NormalScore();
-        GeneticAlgorithm GA = new GeneticAlgorithm(normalScore,insertionMutation,tournamentSelection,positionCrossover,300,100, random);
+        GeneticAlgorithm GA = new GeneticAlgorithm(normalScore,insertionMutation,tournamentSelection,positionCrossover,900,400, random);
 
         long startTime = System.nanoTime();
         List<Solution> population = GA.run(g);
@@ -40,22 +40,24 @@ public class Main {
         double duration = (endTime - startTime) / 1000000000.0;
         System.out.println(duration);
 
-        CommonalitiesMiner commonalitiesMiner = new CommonalitiesMiner(population,25);
+        CommonalitiesMiner commonalitiesMiner = new CommonalitiesMiner(population,80);
         HashMap<Short, ArrayList<Commonality>> commonalities = commonalitiesMiner.mine();
 
-        System.out.println(commonalities);
+        commonalities.forEach((k,v) -> {
+            System.out.println(v);
+        });
 
         Crossover positionCrossover2 = new PositionCrossover(random, 1.00);
-        Mutation insertionMutation2 = new InsertionMutation(random, 0.30);
+        Mutation insertionMutation2 = new InsertionMutation(random, 0.35);
         Selection tournamentSelection2 = new TournamentSelection(random, 2);
-        ScoreStrategy CommonalityScore = new CommonalityScore(commonalities);
-        GeneticAlgorithm GA2 = new GeneticAlgorithm(normalScore,insertionMutation,tournamentSelection,positionCrossover,300,100, random);
+        ScoreStrategy commonalityScore = new CommonalityScore(commonalities);
+        GeneticAlgorithm GA2 = new GeneticAlgorithm(commonalityScore,insertionMutation2,tournamentSelection2,positionCrossover2,900,400, random);
 
         long startTime2 = System.nanoTime();
-        List<Solution> population2 = GA.run(g);
+        List<Solution> population2 = GA2.run(g);
         long endTime2 = System.nanoTime();
 
-        double duration2 = (endTime - startTime) / 1000000000.0;
-        System.out.println(duration);
+        double duration2 = (endTime2 - startTime2) / 1000000000.0;
+        System.out.println(duration2);
     }
 }

@@ -45,7 +45,7 @@ public class CommonalityScore implements ScoreStrategy {
             ArrayList<Commonality> vertexCommonalities = commonalities.get(v);
             if(vertexCommonalities.contains(commonality)){
                 commonality = vertexCommonalities.get(vertexCommonalities.indexOf(commonality));
-                score -= 2 * commonality.getSupport() * commonality.getSupport();
+                score -= commonality.getSupport() * commonality.getSupport();
             }
         }
 

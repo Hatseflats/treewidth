@@ -59,7 +59,7 @@ public class GeneticAlgorithm extends MetaHeuristic {
     public List<Solution> initialPopulation(Graph g) {
         List<Solution> population = new ArrayList<>();
         for(int i = 0; i<populationSize; i++){
-            Solution individual = new Solution(g.maxMinDegree(random));
+            Solution individual = new Solution(g.randomOrder(random));
             population.add(individual);
         }
         return population;
