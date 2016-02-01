@@ -1,12 +1,12 @@
 package Commonalities;
 
-public class Commonality {
+public class SuccPredCommonality {
     public Short vertex;
     public Short successor;
     public Short predecessor;
     public int support;
 
-    public Commonality(Short vertex, Short predecessor, Short successor) {
+    public SuccPredCommonality(Short vertex, Short predecessor, Short successor) {
         this.vertex = vertex;
         this.predecessor = predecessor;
         this.successor = successor;
@@ -46,10 +46,10 @@ public class Commonality {
 
     @Override
     public boolean equals(Object obj) {
-        Commonality commonality = (Commonality) obj;
-        return this.vertex.hashCode() == commonality.getVertex().hashCode() &&
-                this.predecessor.hashCode() == commonality.getPredecessor().hashCode() &&
-                this.successor.hashCode() == commonality.getSuccessor().hashCode();
+        SuccPredCommonality succPredCommonality = (SuccPredCommonality) obj;
+        return this.vertex.hashCode() == succPredCommonality.getVertex().hashCode() &&
+                this.predecessor.hashCode() == succPredCommonality.getPredecessor().hashCode() &&
+                this.successor.hashCode() == succPredCommonality.getSuccessor().hashCode();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package MetaHeuristics.ScoreStrategy;
 
-import Commonalities.Commonality;
+import Commonalities.SuccPredCommonality;
 import MetaHeuristics.Solution;
 
 import java.util.ArrayList;
@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CommonalityScore implements ScoreStrategy {
+public class SuccPredCommonalityScore implements ScoreStrategy {
 
-    public HashMap<Short, ArrayList<Commonality>> commonalities;
+    public HashMap<Short, ArrayList<Commonalities.SuccPredCommonality>> commonalities;
 
-    public CommonalityScore(HashMap<Short, ArrayList<Commonality>> commonalities) {
+    public SuccPredCommonalityScore(HashMap<Short, ArrayList<Commonalities.SuccPredCommonality>> commonalities) {
         this.commonalities = commonalities;
     }
 
@@ -41,11 +41,11 @@ public class CommonalityScore implements ScoreStrategy {
                 minSuccessor = solution.ordering.get(minSuccIndex);
             }
 
-            Commonality commonality = new Commonality(v, maxPredecessor, minSuccessor);
-            ArrayList<Commonality> vertexCommonalities = commonalities.get(v);
-            if(vertexCommonalities.contains(commonality)){
-                commonality = vertexCommonalities.get(vertexCommonalities.indexOf(commonality));
-                score -= commonality.getSupport() * commonality.getSupport();
+            Commonalities.SuccPredCommonality succPredCommonality = new Commonalities.SuccPredCommonality(v, maxPredecessor, minSuccessor);
+            ArrayList<Commonalities.SuccPredCommonality> vertexCommonalities = commonalities.get(v);
+            if(vertexCommonalities.contains(succPredCommonality)){
+                succPredCommonality = vertexCommonalities.get(vertexCommonalities.indexOf(succPredCommonality));
+                score -= succPredCommonality.getSupport() * succPredCommonality.getSupport();
             }
         }
 

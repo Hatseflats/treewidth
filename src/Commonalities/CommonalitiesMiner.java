@@ -16,20 +16,20 @@ public class CommonalitiesMiner {
         this.minSupport = minSupport;
     }
 
-    public HashMap<Short, ArrayList<Commonality>> mine(){
-        HashMap<Short, ArrayList<Commonality>> commonalities = new HashMap<>();
+    public HashMap<Short, ArrayList<SuccPredCommonality>> getSuccPredCommonalities(){
+        HashMap<Short, ArrayList<SuccPredCommonality>> commonalities = new HashMap<>();
 
         db.get(0).ordering.forEach(v -> commonalities.put(v, updateVertex(v)));
         commonalities.forEach((vertex, commonalitiesList) -> {
-            ArrayList<Commonality> filtered = commonalitiesList.stream().filter(commonality -> commonality.getSupport() >= minSupport).collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<SuccPredCommonality> filtered = commonalitiesList.stream().filter(commonality -> commonality.getSupport() >= minSupport).collect(Collectors.toCollection(ArrayList::new));
             commonalities.replace(vertex, filtered);
         });
 
         return commonalities;
     }
 
-    public ArrayList<Commonality> updateVertex(Short v){
-        ArrayList<Commonality> vertexCommonalities = new ArrayList<>();
+    public ArrayList<SuccPredCommonality> updateVertex(Short v){
+        ArrayList<SuccPredCommonality> vertexCommonalities = new ArrayList<>();
 
         for(Solution solution:db){
             int maxPredIndex = solution.maxPredecessor(v);
@@ -47,18 +47,34 @@ public class CommonalitiesMiner {
                 minSuccessor = solution.ordering.get(minSuccIndex);
             }
 
-            Commonality commonality = new Commonality(v, maxPredecessor, minSuccessor);
+            SuccPredCommonality succPredCommonality = new SuccPredCommonality(v, maxPredecessor, minSuccessor);
 
-            if(vertexCommonalities.contains(commonality)){
-                commonality = vertexCommonalities.get(vertexCommonalities.indexOf(commonality));
+            if(vertexCommonalities.contains(succPredCommonality)){
+                succPredCommonality = vertexCommonalities.get(vertexCommonalities.indexOf(succPredCommonality));
             } else {
-                vertexCommonalities.add(commonality);
+                vertexCommonalities.add(succPredCommonality);
             }
-            commonality.setSupport(commonality.getSupport() + 1);
+            succPredCommonality.setSupport(succPredCommonality.getSupport() + 1);
         }
 
         return vertexCommonalities;
 
+    }
+
+    public HashMap<Short, HashMap<Short, Integer>> getEdgeCommonalities(){
+        HashMap<Short, HashMap<Short, Integer>> edgeCommonalities = new HashMap<>();
+
+        db.get(0).ordering.forEach(v -> {
+            HashMap<Short, Integer> edgeCounts = new HashMap<Short, Integer>();
+
+            db.forEach(s -> {
+                s.successors.get(v).forEach(w -> edgeCounts.compute(w, (key,value) -> value == null ? 1 : value+1));
+            });
+
+            edgeCommonalities.put(v, edgeCounts);
+        });
+
+        return edgeCommonalities;
     }
 
 }
