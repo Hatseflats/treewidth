@@ -20,14 +20,18 @@ public class TabuSearch extends MetaHeuristic {
 
     public Solution run(Graph g){
         int i = 0;
-        int a = 400;
+        int a = 1000;
 
         LinkedList<Solution> tabuList = new LinkedList<>();
 
         Solution currentSolution =  new Solution(g.maxMinDegree(random));
         Solution bestSolution = currentSolution.copy();
         int bestScore = Integer.MAX_VALUE;
-//        currentSolution.successors = triangulate(currentSolution, g.copy());
+
+        currentSolution.successors =  triangulate(currentSolution,g.copy());
+        currentSolution.score = scoreStrategy.score(currentSolution);
+
+        int currentScore;
 
 
         while (i < a){
@@ -36,7 +40,7 @@ public class TabuSearch extends MetaHeuristic {
                 tabuList.poll();
             }
 
-            int currentScore = scoreStrategy.score(currentSolution);
+            currentScore = currentSolution.score;
 
             if(currentScore < bestScore){
                 bestScore = currentScore;
@@ -59,7 +63,7 @@ public class TabuSearch extends MetaHeuristic {
                 currentSolution = newSolution;
             }
 
-//            System.out.println("Score:" + scoreStrategy.score(currentSolution) + ", Treewidth:" + treeWidth(currentSolution.successors));
+            System.out.println("Score:" + scoreStrategy.score(currentSolution) + ", Treewidth:" + treeWidth(currentSolution));
 
             i++;
         }
