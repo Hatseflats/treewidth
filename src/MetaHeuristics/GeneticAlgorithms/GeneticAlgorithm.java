@@ -34,11 +34,9 @@ public class GeneticAlgorithm extends MetaHeuristic {
         int generations = 0;
         List<Solution> population = initialPopulation(g);
         evaluatePopulation(population, g);
-        for(Solution s: population){
-            System.out.print(treeWidth(s) + " ");
-        }
-        System.out.println("-----------");
+
         while(generations < maxGenerations){
+            System.out.println(generations);
             generations++;
             List<Solution> newPopulation = selection(population);
             newPopulation = crossover(newPopulation);
@@ -49,8 +47,9 @@ public class GeneticAlgorithm extends MetaHeuristic {
         }
 
         for(Solution s: population){
-            System.out.println(treeWidth(s) + " " + s.ordering);
+            System.out.print(treeWidth(s) + " ");
         }
+
         System.out.println("");
 
         return population;

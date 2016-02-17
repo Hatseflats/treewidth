@@ -11,16 +11,17 @@ import java.util.*;
 public class TabuSearch extends MetaHeuristic {
     public int tabuSize;
     public Random random;
+    public int maxIterations;
 
-    public TabuSearch(ScoreStrategy scoreStrategy, int tabuSize, Random random){
+    public TabuSearch(ScoreStrategy scoreStrategy, int tabuSize, Random random, int maxIterations){
         super(scoreStrategy);
         this.tabuSize = tabuSize;
         this.random = random;
+        this.maxIterations = maxIterations;
     }
 
     public Solution run(Graph g){
         int i = 0;
-        int a = 1000;
 
         LinkedList<Solution> tabuList = new LinkedList<>();
 
@@ -34,7 +35,7 @@ public class TabuSearch extends MetaHeuristic {
         int currentScore;
 
 
-        while (i < a){
+        while (i < maxIterations){
             tabuList.push(currentSolution);
             if(tabuList.size() > tabuSize){
                 tabuList.poll();
@@ -59,11 +60,13 @@ public class TabuSearch extends MetaHeuristic {
 
             if(scoreStrategy.score(newSolution) >= scoreStrategy.score(currentSolution)){
                 diversification(currentSolution);
+                currentSolution.successors = triangulate(currentSolution,g.copy());
+                currentSolution.score = scoreStrategy.score(currentSolution);
             } else {
                 currentSolution = newSolution;
             }
 
-            System.out.println("Score:" + scoreStrategy.score(currentSolution) + ", Treewidth:" + treeWidth(currentSolution));
+//            System.out.println("Score:" + scoreStrategy.score(currentSolution) + ", Treewidth:" + treeWidth(currentSolution));
 
             i++;
         }

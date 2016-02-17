@@ -43,7 +43,7 @@ public class SimulatedAnnealing extends MetaHeuristic {
 
             ArrayList<Solution> neighbors = neighborhood(currentSolution);
             Collections.shuffle(neighbors, random);
-//            System.out.println("Score:" + currentScore + ", Treewidth:" + treeWidth(currentSolution.successors) + ", T:" + T + ", lastImprovement:" + lastImprovement);
+//            System.out.println("Score:" + currentScore + ", Treewidth:" + treeWidth(currentSolution) + ", T:" + T + ", lastImprovement:" + lastImprovement);
 
             for(Solution neighbor: neighbors){
                 neighbor.successors = triangulate(neighbor, g.copy());

@@ -45,7 +45,7 @@ public class SuccPredCommonalityScore implements ScoreStrategy {
             ArrayList<Commonalities.SuccPredCommonality> vertexCommonalities = commonalities.get(v);
             if(vertexCommonalities.contains(succPredCommonality)){
                 succPredCommonality = vertexCommonalities.get(vertexCommonalities.indexOf(succPredCommonality));
-                score -= succPredCommonality.getSupport() * succPredCommonality.getSupport();
+                score -= (n * succPredCommonality.getSupport());
             }
         }
 

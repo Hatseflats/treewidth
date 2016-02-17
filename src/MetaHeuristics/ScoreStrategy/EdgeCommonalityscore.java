@@ -6,12 +6,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class EdgeCommonalityscore implements ScoreStrategy {
-    public HashMap<Short, HashMap<Short, Integer>> edgeCounts;
+    public HashMap<Short, Map<Short, Integer>> edgeCounts;
 
-    public EdgeCommonalityscore(HashMap<Short, HashMap<Short, Integer>> edgeCounts) {
+    public EdgeCommonalityscore(HashMap<Short, Map<Short, Integer>> edgeCounts) {
         this.edgeCounts = edgeCounts;
     }
 
@@ -24,13 +25,13 @@ public class EdgeCommonalityscore implements ScoreStrategy {
         int score = (n*n)*(w*w)+succ;
 
         for(Short v: solution.ordering) {
-            HashMap<Short, Integer> counts = edgeCounts.get(v);
+            Map<Short, Integer> counts = edgeCounts.get(v);
             Set<Short> edges = solution.successors.get(v);
 
             for (Short u : edges) {
                 if (counts.containsKey(u)) {
                     int count = counts.get(u);
-                    score -= 3 * count * count;
+                    score -= n;
                 }
             }
         }
