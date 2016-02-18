@@ -41,52 +41,53 @@ public class SimulatedAnnealing extends MetaHeuristic {
                 lastImprovement = 0;
             }
 
-            ArrayList<Solution> neighbors = neighborhood(currentSolution);
-            Collections.shuffle(neighbors, random);
-//            System.out.println("Score:" + currentScore + ", Treewidth:" + treeWidth(currentSolution) + ", T:" + T + ", lastImprovement:" + lastImprovement);
-
-            for(Solution neighbor: neighbors){
-                neighbor.successors = triangulate(neighbor, g.copy());
-                neighbor.score = scoreStrategy.score(neighbor);
-
-                if(neighbor.score < currentScore || acceptDeterioration(currentScore, neighbor.score)){
-                    currentSolution = neighbor;
-                    break;
+            while(true){
+                short v = (short) random.nextInt(g.adjacencyList.keySet().size());
+                if(v == 0){
+                    v = 1;
                 }
-                lastImprovement++;
+
+                int maxPred = currentSolution.maxPredecessor(v);
+                int minSucc = currentSolution.minSuccessor(v);
+
+                Solution s1 = new Solution();
+                Solution s2 = new Solution();
+
+                if(maxPred != -1){
+                    s1 = currentSolution.copy();
+                    s1.swap(v-1, maxPred);
+                }
+                if(minSucc != -1){
+                    s2 = currentSolution.copy();
+                    s2.swap(v-1, minSucc);
+                }
+
+                if(maxPred != -1) {
+                    s1.successors = triangulate(s1, g.copy());
+                    s1.score = scoreStrategy.score(s1);
+
+                    if(s1.score < currentScore || acceptDeterioration(currentScore, s1.score)){
+                        currentSolution = s1;
+                        break;
+                    }
+                    lastImprovement++;
+                } else if (minSucc != -1){
+                    s2.successors = triangulate(s2, g.copy());
+                    s2.score = scoreStrategy.score(s2);
+
+                    if(s2.score < currentScore || acceptDeterioration(currentScore, s2.score)){
+                        currentSolution = s2;
+                        break;
+                    }
+                    lastImprovement++;
+                }
             }
 
+//            System.out.println("Score:" + currentScore + ", Treewidth:" + treeWidth(currentSolution) + ", T:" + T + ", lastImprovement:" + lastImprovement);
             T = T * alpha;
         }
 
         return bestSolution;
-    }
-
-    public ArrayList<Solution> neighborhood(Solution s){
-        ArrayList<Solution> neighbors = new ArrayList<>();
-        int currentIndex = 0;
-
-        for(Short v : s.ordering){
-            int maxPred = s.maxPredecessor(v);
-            int minSucc = s.minSuccessor(v);
-
-            if(maxPred != -1){
-                Solution s1 = s.copy();
-                s1.swap(currentIndex, maxPred);
-                if(!neighbors.contains(s1)){
-                    neighbors.add(s1);
-                }
-            }
-            if(minSucc != -1){
-                Solution s2 = s.copy();
-                s2.swap(currentIndex, minSucc);
-                if(!neighbors.contains(s2)){
-                    neighbors.add(s2);
-                }
-            }
-            currentIndex = currentIndex + 1;
-        }
-        return neighbors;
     }
 
     private boolean acceptDeterioration(int currentScore, int neighborScore){

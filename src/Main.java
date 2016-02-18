@@ -23,24 +23,34 @@ import java.util.*;
 public class Main {
     public static void main(String[] args){
         GAGA();
+//        GraphReader gr = new GraphReader("games120.col");
+//        Graph g = gr.read();
+//
+//        Random random = new Random(125512512);
+//        ScoreStrategy normalScore = new NormalScore();
+//
+//        SimulatedAnnealing SA2 = new SimulatedAnnealing(normalScore, 300, 0.999, random, 2000);
+//        SA2.run(g);
+
+
     }
 
     public static void GAGA() {
-        GraphReader gr = new GraphReader("myciel7.col");
+        GraphReader gr = new GraphReader("games120.col");
         Graph g = gr.read();
 
-        Random random = new Random(235235);
+        Random random = new Random(235532532);
 
-        int populationsize = 400;
-        int maxGenerations = 400;
-        int edgeSupport = 300;
-        int spSupport = 150;
+        int populationsize = 800;
+        int maxGenerations = 800;
+        int edgeSupport = 600;
+        int spSupport = 400;
 
-        int maxIterations = 30000;
+        int maxIterations = 4000;
 
-        int nonImprovingIterations = 3000;
-        int T = 200;
-        double alpha = 0.999;
+        int nonImprovingIterations = 2000;
+        int T = 350;
+        double alpha = 0.9992;
 
         Crossover positionCrossover = new PositionCrossover(random, 1.00);
         Mutation insertionMutation = new InsertionMutation(random, 0.30);

@@ -36,7 +36,7 @@ public class GeneticAlgorithm extends MetaHeuristic {
         evaluatePopulation(population, g);
 
         while(generations < maxGenerations){
-            System.out.println(generations);
+//            System.out.println(generations);
             generations++;
             List<Solution> newPopulation = selection(population);
             newPopulation = crossover(newPopulation);
